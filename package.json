@@ -23,6 +23,11 @@
 				"title": "测试命令"
 			}
 			,{
+				"command": "ankosure-assistant.refreshTreeView",
+				"title": "刷新侧边栏视图",
+				"icon":"$(refresh)"
+			}
+			,{
 				"command": "ankosure-assistant.copyImageLink",
 				"title": "复制图片链接",
 				"icon":"$(explorer-view-icon)"
@@ -57,6 +62,12 @@
 			}	
 		],
 		"menus": {
+			"view/title": [
+				{
+					"command": "ankosure-assistant.refreshTreeView",
+					"group": "navigation"
+				}
+			],
 			"view/item/context": [
 				{
 					"command": "ankosure-assistant.copyImageLink",

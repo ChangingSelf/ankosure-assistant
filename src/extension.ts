@@ -28,6 +28,12 @@ export function activate(context: vscode.ExtensionContext) {
 		showCollapseAll : true,
 	});
 
+	//刷新视图
+	context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView', 
+	() =>{
+		imageLinksProvider.refresh();
+	}));
+
 	//复制链接的命令
 	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyImageLink",(imageItem:ImageItem)=>{
 		vscode.env.clipboard.writeText(imageItem.url);
