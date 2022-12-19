@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { loadSettings } from '../utils';
 
 /** 图片数据的格式
 {
@@ -73,13 +74,17 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         let children:ImageItem[] = [];
         if(!element){
             //获取根结点
+            try {
+                let editor = vscode.window.activeTextEditor;
+                if(!editor) {return [];}
+                let filepath = loadSettings().imagesDataPath;
+                
+                children = this.parseJsonData(JSON.parse(fs.readFileSync(filepath,{encoding:'utf8', flag:'r'})));
 
-            let editor = vscode.window.activeTextEditor;
-            if(!editor) {return [];}
-            let filepath = editor.document.uri.fsPath;
+            } catch (error) {
+                console.log(error);
+            }
             
-            children = this.parseJsonData(JSON.parse(fs.readFileSync(filepath,{encoding:'utf8', flag:'r'})));
-
         }else{
             //获取子结点
             children = element.children;

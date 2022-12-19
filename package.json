@@ -1,5 +1,5 @@
 {
-  "name": "ankosure-assistant",
+	"name": "ankosure-assistant",
 	"displayName": "安科助手",
 	"description": "辅助安科(あんこスレ)的创作",
 	"version": "0.0.1",
@@ -14,8 +14,7 @@
 	"repository": {
 		"url": "https://github.com/ChangingSelf/ankosure-assistant"
 	},
-	"activationEvents": [
-	],
+	"activationEvents": [],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
@@ -34,12 +33,25 @@
 			]
 		},
 		"views": {
-			"ankosure-explorer":[
+			"ankosure-explorer": [
 				{
 					"id": "ankosure-images",
-					"name":"图片链接管理"
+					"name": "图片链接管理"
 				}
 			]
+		},
+		"configuration": {
+			"order": 0,
+			"title": "安科助手",
+			"properties": {
+				"ankosure-assistant.imagesDataPath":{
+					"order":0,
+					"markdownDescription": "存放图片链接数据的json文件的路径，需要包含文件名。例如`F:/images.json`",
+					"type":"string",
+					"default":"",
+					"format": "uri"
+				}
+			}
 		}
 	},
 	"scripts": {
