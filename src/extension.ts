@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { ImageLinksProvider } from './providers/ImageLinksProvider';
+import { ImageItem, ImageLinksProvider } from './providers/ImageLinksProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -29,11 +29,24 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	//复制链接的命令
-	
+	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyImageLink",(imageItem:ImageItem)=>{
+		vscode.env.clipboard.writeText(imageItem.url);
+		vscode.window.showInformationMessage(`已将纯链接复制到剪贴板：${imageItem.url}`);
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyImageLinkCode",(imageItem:ImageItem)=>{
+		vscode.env.clipboard.writeText(`[img]${imageItem.url}[/img]`);
+		vscode.window.showInformationMessage(`已将论坛代码链接复制到剪贴板：[img]${imageItem.url}[/img]`);
+	}));
 
 
 	//事件
 	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event)=>{
+		imageLinksProvider.refresh();
+	}));
+	context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection((event)=>{
+		imageLinksProvider.refresh();
+	}));
+	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((event)=>{
 		imageLinksProvider.refresh();
 	}));
 }

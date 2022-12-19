@@ -22,6 +22,16 @@
 				"command": "ankosure-assistant.helloWorld",
 				"title": "测试命令"
 			}
+			,{
+				"command": "ankosure-assistant.copyImageLink",
+				"title": "复制图片链接",
+				"icon":"$(explorer-view-icon)"
+			}
+			,{
+				"command": "ankosure-assistant.copyImageLinkCode",
+				"title": "复制论坛代码图片链接",
+				"icon":"$(notebook-open-as-text)"
+			}
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -46,6 +56,20 @@
 				"contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径\n[打开设置](command:workbench.action.openSettings2)"
 			}	
 		],
+		"menus": {
+			"view/item/context": [
+				{
+					"command": "ankosure-assistant.copyImageLink",
+					"when": "view == ankosure-images",
+					"group": "inline"
+				}
+				,{
+					"command": "ankosure-assistant.copyImageLinkCode",
+					"when": "view == ankosure-images",
+					"group": "inline"
+				}
+			]
+		},
 		"configuration": {
 			"order": 0,
 			"title": "安科助手",
