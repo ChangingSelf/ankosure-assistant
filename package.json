@@ -40,6 +40,12 @@
 				}
 			]
 		},
+		"viewsWelcome": [
+			{
+				"view":"ankosure-images",
+				"contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径\n[打开设置](command:workbench.action.openSettings2)"
+			}	
+		],
 		"configuration": {
 			"order": 0,
 			"title": "安科助手",

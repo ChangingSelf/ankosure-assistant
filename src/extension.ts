@@ -28,14 +28,14 @@ export function activate(context: vscode.ExtensionContext) {
 		showCollapseAll : true,
 	});
 
+	//复制链接的命令
+	
+
+
 	//事件
 	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event)=>{
 		imageLinksProvider.refresh();
 	}));
-
-
-
-
 }
 
 // this method is called when your extension is deactivated
