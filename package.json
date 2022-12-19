@@ -9,17 +9,38 @@
 	"categories": [
 		"Other"
 	],
+	"publisher": "yxChangingSelf",
+	"license": "MIT",
+	"repository": {
+		"url": "https://github.com/ChangingSelf/ankosure-assistant"
+	},
 	"activationEvents": [
-        "onCommand:ankosure-assistant.helloWorld"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "ankosure-assistant.helloWorld",
-				"title": "Hello World"
+				"title": "测试命令"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "ankosure-explorer",
+					"title": "安科资源管理器",
+					"icon": "images/icon.svg"
+				}
+			]
+		},
+		"views": {
+			"ankosure-explorer":[
+				{
+					"id": "ankosure-images",
+					"name":"图片链接管理"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
