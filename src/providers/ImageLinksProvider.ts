@@ -18,7 +18,7 @@ import { loadSettings } from '../utils';
  */
 
 
-class ImageItem extends vscode.TreeItem{
+export class ImageItem extends vscode.TreeItem{
     constructor(
         public readonly label: string,
         public url:string = "",
