@@ -1,9 +1,24 @@
-# Change Log
+# 更新日志
 
-All notable changes to the "ankosure-assistant" extension will be documented in this file.
+此项目的所有显著更改都将记录在此文件中。
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+格式基于[维护更新日志（Keep a Changelog）](https://keepachangelog.com/en/1.0.0/)，
+并且该项目遵循 [语义版本控制（Semantic Versioning）](https://semver.org/spec/v2.0.0.html)。
 
-## [Unreleased]
 
-- Initial release
+## [0.0.2] - 2022-12-20
+
+### 新特性
+
+- 现在图片资源管理器可以在UI里增删结点而无需手动修改json文件
+- 新增刷新视图按钮
+
+### 修复
+
+- 换了自己画的图标
+- 非图片结点不会出现复制按钮了
+- 修复刷新按钮出现在其他view的bug
+
+## [0.0.1] - 2022-12-19
+
+- 初始版本：可以用安科图片资源管理器预览json数据文件中的网络图片
