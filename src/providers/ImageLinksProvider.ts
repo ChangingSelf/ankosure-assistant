@@ -41,6 +41,22 @@ export class ImageItem extends vscode.TreeItem{
             this.iconPath = vscode.ThemeIcon.Folder;
         }
     }
+
+    /**
+     * 
+     * @returns 返回是否为图片结点
+     */
+    isImage():boolean{
+        return !!this.url;
+    }
+
+    /**
+     * 
+     * @returns 结点路径字符串
+     */
+    getNodePathStr():string{
+        return this.nodePath.join("/");
+    }
 }
 
 
@@ -92,7 +108,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
             }else{
                 let nodePath = parent.nodePath;
                 let obj = jsonObj;
-                if(parent.url){
+                if(parent.isImage()){
                     //如果是叶子结点，就在其同级插入
                     nodePath = nodePath.slice(0,-1);
                 }
@@ -111,8 +127,28 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         }
     }
 
-    
+    /**
+     * 删除结点
+     * @param node 
+     */
+    async delNode(node:ImageItem){
+        if(!node){return;}
 
+        let selection = await vscode.window.showInformationMessage(`你确定要删除「${node.getNodePathStr()}」吗？`,"确定","取消");
+        if(selection!=="确定"){return;}
+
+        let filePath = this.getDataFilePath();
+        let jsonObj = JSON.parse(fs.readFileSync(filePath,{encoding:'utf8', flag:'r'}));
+
+        let nodePath = node.nodePath.slice(0,-1);
+        let obj = jsonObj;
+        
+        for(let key of nodePath){
+            obj = obj[key];
+        }
+        delete obj[node.label];
+        fs.writeFileSync(filePath,JSON.stringify(jsonObj,null,4),{encoding:"utf8"});
+    }
 
     /**
      * 解析JSON对象

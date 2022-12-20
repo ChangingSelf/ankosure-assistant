@@ -54,6 +54,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.newImageLink",()=>{
 		imageLinksProvider.addNode.bind(imageLinksProvider)(imageLinksTreeView.selection[0],true);
 	}));
+	//删除结点
+	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.delImageNode",(node:ImageItem)=>{
+		imageLinksProvider.delNode.bind(imageLinksProvider)(node);
+	}));
 
 
 

@@ -48,6 +48,11 @@
 				"title": "新建图片链接结点",
 				"icon":"$(new-file)"
 			}
+			,{
+				"command": "ankosure-assistant.delImageNode",
+				"title": "删除图片资源结点",
+				"icon":"$(trash)"
+			}
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -99,6 +104,11 @@
 				,{
 					"command": "ankosure-assistant.copyImageLinkCode",
 					"when": "view == ankosure-images && viewItem == image",
+					"group": "inline"
+				}
+				,{
+					"command": "ankosure-assistant.delImageNode",
+					"when": "view == ankosure-images",
 					"group": "inline"
 				}
 			]
