@@ -55,6 +55,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((event)=>{
 		imageLinksProvider.refresh();
 	}));
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
+		imageLinksProvider.refresh();
+	}));
 }
 
 // this method is called when your extension is deactivated

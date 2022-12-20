@@ -31,6 +31,7 @@ export class ImageItem extends vscode.TreeItem{
             this.tooltip = new vscode.MarkdownString(`![${label}](${url}|width=240)`);
             this.resourceUri = vscode.Uri.parse(url);
             this.iconPath = vscode.ThemeIcon.File;
+            this.contextValue = "image";
         }else{
             //非叶子结点显示孩子数目
             this.tooltip = `子项数:${children.length}`;
@@ -41,14 +42,36 @@ export class ImageItem extends vscode.TreeItem{
 
 
 export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
+
     private _onDidChangeTreeData: vscode.EventEmitter<ImageItem | undefined | null | void> = new vscode.EventEmitter<ImageItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<ImageItem | undefined | null | void> = this._onDidChangeTreeData.event;
     refresh(): void {
         this._onDidChangeTreeData.fire();
     }
 
+    /**
+     * 获取数据文件路径
+     * @returns 数据文件路径
+     */
+    getDataFilePath(){
+        return loadSettings().imagesDataPath;
+    }
+
+    /**
+     * 添加图片结点
+     */
+    addNode(){
+        
+    }
+
+    
 
 
+    /**
+     * 解析JSON对象
+     * @param data JSON对象
+     * @returns 对应的图片结点
+     */
     parseJsonData(data:any):ImageItem[]{
         let result:ImageItem[] = [];
         if(data){
@@ -75,12 +98,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         if(!element){
             //获取根结点
             try {
-                let editor = vscode.window.activeTextEditor;
-                if(!editor) {return [];}
-                let filepath = loadSettings().imagesDataPath;
-                
-                children = this.parseJsonData(JSON.parse(fs.readFileSync(filepath,{encoding:'utf8', flag:'r'})));
-
+                children = this.parseJsonData(JSON.parse(fs.readFileSync(this.getDataFilePath(),{encoding:'utf8', flag:'r'})));
             } catch (error) {
                 console.log(error);
             }

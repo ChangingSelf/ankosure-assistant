@@ -71,12 +71,12 @@
 			"view/item/context": [
 				{
 					"command": "ankosure-assistant.copyImageLink",
-					"when": "view == ankosure-images",
+					"when": "view == ankosure-images && viewItem == image",
 					"group": "inline"
 				}
 				,{
 					"command": "ankosure-assistant.copyImageLinkCode",
-					"when": "view == ankosure-images",
+					"when": "view == ankosure-images && viewItem == image",
 					"group": "inline"
 				}
 			]
