@@ -5,6 +5,9 @@
 格式基于[维护更新日志（Keep a Changelog）](https://keepachangelog.com/en/1.0.0/)，
 并且该项目遵循 [语义版本控制（Semantic Versioning）](https://semver.org/spec/v2.0.0.html)。
 
+## [0.0.3] - 2022-12-20
+
+- 新增“新建数据文件”和“选择数据文件”的按钮，这下用户完全不需要知道数据文件内容了
 
 ## [0.0.2] - 2022-12-20
 
