@@ -29,6 +29,11 @@
 				"icon":"$(refresh)"
 			}
 			,{
+				"command": "ankosure-assistant.newImageDataFile",
+				"title": "新建数据文件",
+				"icon":"$(terminal-new)"
+			}
+			,{
 				"command": "ankosure-assistant.copyImageLink",
 				"title": "复制图片链接",
 				"icon":"$(explorer-view-icon)"
@@ -74,7 +79,7 @@
 		"viewsWelcome": [
 			{
 				"view":"ankosure-images",
-				"contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径\n[打开设置](command:workbench.action.openSettings2)"
+				"contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径\n[打开设置](command:workbench.action.openSettings2)\n[新建数据文件](command:ankosure-assistant.newImageDataFile)"
 			}	
 		],
 		"menus": {
@@ -91,6 +96,11 @@
 				}
 				,{
 					"command": "ankosure-assistant.newImageLink",
+					"when": "view == ankosure-images",
+					"group": "navigation"
+				}
+				,{
+					"command": "ankosure-assistant.newImageDataFile",
 					"when": "view == ankosure-images",
 					"group": "navigation"
 				}
@@ -121,8 +131,7 @@
 					"order":0,
 					"markdownDescription": "存放图片链接数据的json文件的路径，需要包含文件名。例如`F:/images.json`",
 					"type":"string",
-					"default":"",
-					"format": "uri"
+					"default":""
 				}
 			}
 		}

@@ -20,22 +20,22 @@ import { loadSettings } from '../utils';
 /**
  * 图片结点
  */
-export class ImageItem extends vscode.TreeItem{
+export class ImageItem extends vscode.TreeItem {
     constructor(
         public readonly label: string,
-        public url:string = "",
-        public children:ImageItem[] = [],
-        public nodePath:string[] = [],
+        public url: string = "",
+        public children: ImageItem[] = [],
+        public nodePath: string[] = [],
         public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.None
-    ){
-        super(label,collapsibleState);
-        if(url){
+    ) {
+        super(label, collapsibleState);
+        if (url) {
             //叶子结点显示图片预览
-            this.tooltip = new vscode.MarkdownString(`![${label}](${url}|width=240)`);
+            this.tooltip = new vscode.MarkdownString(`${this.getNodePathStr()}\n\n![${label}](${url}|width=240)\n\n[查看原图](${url})`);
             this.resourceUri = vscode.Uri.parse(url);
             this.iconPath = vscode.ThemeIcon.File;
             this.contextValue = "image";
-        }else{
+        } else {
             //非叶子结点显示孩子数目
             this.tooltip = `子项数:${children.length}`;
             this.iconPath = vscode.ThemeIcon.Folder;
@@ -46,7 +46,7 @@ export class ImageItem extends vscode.TreeItem{
      * 
      * @returns 返回是否为图片结点
      */
-    isImage():boolean{
+    isImage(): boolean {
         return !!this.url;
     }
 
@@ -54,7 +54,7 @@ export class ImageItem extends vscode.TreeItem{
      * 
      * @returns 结点路径字符串
      */
-    getNodePathStr():string{
+    getNodePathStr(): string {
         return this.nodePath.join("/");
     }
 }
@@ -64,15 +64,19 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
 
     private _onDidChangeTreeData: vscode.EventEmitter<ImageItem | undefined | null | void> = new vscode.EventEmitter<ImageItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<ImageItem | undefined | null | void> = this._onDidChangeTreeData.event;
-    refresh(): void {
+    refresh(imageLinksTreeView?: vscode.TreeView<ImageItem>): void {
         this._onDidChangeTreeData.fire();
+        let dataFilePath = this.getDataFilePath();
+        if (dataFilePath && imageLinksTreeView) {
+            imageLinksTreeView.message = `当前数据源:${dataFilePath}`;
+        }
     }
 
     /**
      * 获取数据文件路径
      * @returns 数据文件路径
      */
-    getDataFilePath(){
+    getDataFilePath() {
         return loadSettings().imagesDataPath;
     }
 
@@ -80,50 +84,51 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
      * 添加图片结点
      * @param parent 给parent添加结点
      */
-    async addNode(parent?:ImageItem,isImage:boolean=false){
-        let name = await vscode.window.showInputBox({placeHolder:`请输入${isImage?"图片":"文件夹"}名称`,prompt:`${isImage?"图片":"文件夹"}名称`});
-        if(!name){return;}
+    async addNode(parent?: ImageItem, isImage: boolean = false) {
+        let name = await vscode.window.showInputBox({ placeHolder: `请输入${isImage ? "图片" : "文件夹"}名称`, prompt: `${isImage ? "图片" : "文件夹"}名称` });
+        if (!name) { return; }
 
-        let url:string|undefined;
-        if(isImage){
-            url = await vscode.window.showInputBox({placeHolder:"请输入图片的网络链接",prompt:"图片链接"});
-            if(!url){return;}
+        let url: string | undefined;
+        if (isImage) {
+            url = await vscode.window.showInputBox({ placeHolder: "请输入图片的网络链接", prompt: "图片链接" });
+            if (!url) { return; }
         }
 
         let filePath = this.getDataFilePath();
-        let jsonObj = JSON.parse(fs.readFileSync(filePath,{encoding:'utf8', flag:'r'}));
-        if(typeof jsonObj === "object"){
+        let jsonObj = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8', flag: 'r' }));
+        if (typeof jsonObj === "object") {
             //重名检查
-            if(name in jsonObj){
+            if (name in jsonObj) {
                 vscode.window.showInformationMessage(`「${name}」在该层级下已经存在，请换个名字`);
                 return;
             }
             //插入
-            if(!parent){
-                if(isImage){
+            if (!parent) {
+                if (isImage) {
                     jsonObj[name] = url;
-                }else{
+                } else {
                     jsonObj[name] = {};
                 }
-            }else{
+            } else {
                 let nodePath = parent.nodePath;
                 let obj = jsonObj;
-                if(parent.isImage()){
+                if (parent.isImage()) {
                     //如果是叶子结点，就在其同级插入
-                    nodePath = nodePath.slice(0,-1);
+                    nodePath = nodePath.slice(0, -1);
                 }
-                for(let key of nodePath){
+                for (let key of nodePath) {
                     //沿着路径一直走
                     obj = obj[key];
                 }
 
-                if(isImage){
+                if (isImage) {
                     obj[name] = url;
-                }else{
+                } else {
                     obj[name] = {};
                 }
             }
-            fs.writeFileSync(filePath,JSON.stringify(jsonObj,null,4),{encoding:"utf8"});
+            fs.writeFileSync(filePath, JSON.stringify(jsonObj, null, 4), { encoding: "utf8" });
+            this.refresh();
         }
     }
 
@@ -131,23 +136,24 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
      * 删除结点
      * @param node 
      */
-    async delNode(node:ImageItem){
-        if(!node){return;}
+    async delNode(node: ImageItem) {
+        if (!node) { return; }
 
-        let selection = await vscode.window.showInformationMessage(`你确定要删除「${node.getNodePathStr()}」吗？`,"确定","取消");
-        if(selection!=="确定"){return;}
+        let selection = await vscode.window.showInformationMessage(`你确定要删除「${node.getNodePathStr()}」吗？`, "确定", "取消");
+        if (selection !== "确定") { return; }
 
         let filePath = this.getDataFilePath();
-        let jsonObj = JSON.parse(fs.readFileSync(filePath,{encoding:'utf8', flag:'r'}));
+        let jsonObj = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8', flag: 'r' }));
 
-        let nodePath = node.nodePath.slice(0,-1);
+        let nodePath = node.nodePath.slice(0, -1);
         let obj = jsonObj;
-        
-        for(let key of nodePath){
+
+        for (let key of nodePath) {
             obj = obj[key];
         }
         delete obj[node.label];
-        fs.writeFileSync(filePath,JSON.stringify(jsonObj,null,4),{encoding:"utf8"});
+        fs.writeFileSync(filePath, JSON.stringify(jsonObj, null, 4), { encoding: "utf8" });
+        this.refresh();
     }
 
     /**
@@ -155,18 +161,18 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
      * @param data JSON对象
      * @returns 对应的图片结点
      */
-    parseJsonData(data:any,nodePath:string[]=[]):ImageItem[]{
-        let result:ImageItem[] = [];
-        if(data){
-            if(typeof data === 'object'){
-                Object.entries(data).forEach(([k,v])=>{
+    parseJsonData(data: any, nodePath: string[] = []): ImageItem[] {
+        let result: ImageItem[] = [];
+        if (data) {
+            if (typeof data === 'object') {
+                Object.entries(data).forEach(([k, v]) => {
                     //将当前结点的key加入路径
-                    if(typeof v === 'object'){
+                    if (typeof v === 'object') {
                         //如果是对象，则为非叶结点
-                        result.push(new ImageItem(k,"",this.parseJsonData(v,[...nodePath,k]),[...nodePath,k],vscode.TreeItemCollapsibleState.Collapsed));
-                    }else if(typeof v === "string"){
+                        result.push(new ImageItem(k, "", this.parseJsonData(v, [...nodePath, k]), [...nodePath, k], vscode.TreeItemCollapsibleState.Collapsed));
+                    } else if (typeof v === "string") {
                         //如果是字符串，则为叶子结点
-                        result.push(new ImageItem(k,v,[],[...nodePath,k]));
+                        result.push(new ImageItem(k, v, [], [...nodePath, k]));
                     }
                 });
             }
@@ -178,16 +184,16 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         return element;
     }
     getChildren(element?: ImageItem | undefined): vscode.ProviderResult<ImageItem[]> {
-        let children:ImageItem[] = [];
-        if(!element){
+        let children: ImageItem[] = [];
+        if (!element) {
             //获取根结点
             try {
-                children = this.parseJsonData(JSON.parse(fs.readFileSync(this.getDataFilePath(),{encoding:'utf8', flag:'r'})));
+                children = this.parseJsonData(JSON.parse(fs.readFileSync(this.getDataFilePath(), { encoding: 'utf8', flag: 'r' })));
             } catch (error) {
                 console.log(error);
             }
-            
-        }else{
+
+        } else {
             //获取子结点
             children = element.children;
         }

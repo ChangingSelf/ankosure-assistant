@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 import { ImageItem, ImageLinksProvider } from './providers/ImageLinksProvider';
 
 // this method is called when your extension is activated
@@ -28,12 +29,25 @@ export function activate(context: vscode.ExtensionContext) {
 		treeDataProvider: imageLinksProvider,
 		showCollapseAll : true,
 	});
-	imageLinksTreeView.message = `当前数据源:${imageLinksProvider.getDataFilePath()}`;
 	
 	//刷新视图
 	context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView', 
 	() =>{
-		imageLinksProvider.refresh();
+		imageLinksProvider.refresh(imageLinksTreeView);
+	}));
+
+	//新建图片数据文件
+	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.newImageDataFile",async ()=>{
+		let uri = await vscode.window.showSaveDialog({
+			filters:{"json":["json"]},
+			title:"选择保存位置",
+			defaultUri:vscode.workspace.workspaceFolders?.at(0)?.uri
+		});
+		if(!uri){return;}
+		//创建文件
+		fs.writeFileSync(uri.fsPath,"{}",{encoding:"utf8"});
+		//写入设置
+		vscode.workspace.getConfiguration().update("ankosure-assistant.imagesDataPath",uri.fsPath,true);
 	}));
 
 	//复制链接的命令
@@ -63,17 +77,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 	//事件
 	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event)=>{
-		imageLinksProvider.refresh();
+		imageLinksProvider.refresh(imageLinksTreeView);
 	}));
 	context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection((event)=>{
-		imageLinksProvider.refresh();
+		imageLinksProvider.refresh(imageLinksTreeView);
 	}));
 	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((event)=>{
-		imageLinksProvider.refresh();
+		imageLinksProvider.refresh(imageLinksTreeView);
 	}));
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
-		imageLinksProvider.refresh();
-		imageLinksTreeView.message = `当前数据源:${imageLinksProvider.getDataFilePath()}`;
+		imageLinksProvider.refresh(imageLinksTreeView);
 	}));
 }
 
