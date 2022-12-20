@@ -65,6 +65,7 @@
 			"view/title": [
 				{
 					"command": "ankosure-assistant.refreshTreeView",
+					"when": "view == ankosure-images",
 					"group": "navigation"
 				}
 			],
