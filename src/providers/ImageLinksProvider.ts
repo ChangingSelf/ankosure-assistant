@@ -64,9 +64,15 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
      * 添加图片结点
      * @param parent 给parent添加结点
      */
-    async addFolder(parent?:ImageItem){
-        let name = await vscode.window.showInputBox({placeHolder:"请输入文件夹名称",prompt:"文件夹名称"});
+    async addNode(parent?:ImageItem,isImage:boolean=false){
+        let name = await vscode.window.showInputBox({placeHolder:`请输入${isImage?"图片":"文件夹"}名称`,prompt:`${isImage?"图片":"文件夹"}名称`});
         if(!name){return;}
+
+        let url:string|undefined;
+        if(isImage){
+            url = await vscode.window.showInputBox({placeHolder:"请输入图片的网络链接",prompt:"图片链接"});
+            if(!url){return;}
+        }
 
         let filePath = this.getDataFilePath();
         let jsonObj = JSON.parse(fs.readFileSync(filePath,{encoding:'utf8', flag:'r'}));
@@ -78,7 +84,11 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
             }
             //插入
             if(!parent){
-                jsonObj[name] = {};
+                if(isImage){
+                    jsonObj[name] = url;
+                }else{
+                    jsonObj[name] = {};
+                }
             }else{
                 let nodePath = parent.nodePath;
                 let obj = jsonObj;
@@ -90,7 +100,12 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
                     //沿着路径一直走
                     obj = obj[key];
                 }
-                obj[name] = {};
+
+                if(isImage){
+                    obj[name] = url;
+                }else{
+                    obj[name] = {};
+                }
             }
             fs.writeFileSync(filePath,JSON.stringify(jsonObj,null,4),{encoding:"utf8"});
         }

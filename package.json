@@ -42,6 +42,11 @@
 				"title": "新建文件夹",
 				"icon":"$(new-folder)"
 			}
+			,{
+				"command": "ankosure-assistant.newImageLink",
+				"title": "新建图片链接结点",
+				"icon":"$(new-file)"
+			}
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -75,6 +80,11 @@
 				}
 				,{
 					"command": "ankosure-assistant.newImageFolder",
+					"when": "view == ankosure-images",
+					"group": "navigation"
+				}
+				,{
+					"command": "ankosure-assistant.newImageLink",
 					"when": "view == ankosure-images",
 					"group": "navigation"
 				}

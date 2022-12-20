@@ -39,17 +39,22 @@ export function activate(context: vscode.ExtensionContext) {
 	//复制链接的命令
 	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyImageLink",(imageItem:ImageItem)=>{
 		vscode.env.clipboard.writeText(imageItem.url);
-		vscode.window.showInformationMessage(`已将纯链接复制到剪贴板：${imageItem.url}`);
+		vscode.window.showInformationMessage(`已将「${imageItem.nodePath.join("/")}」的纯链接复制到剪贴板：${imageItem.url}`);
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyImageLinkCode",(imageItem:ImageItem)=>{
 		vscode.env.clipboard.writeText(`[img]${imageItem.url}[/img]`);
-		vscode.window.showInformationMessage(`已将论坛代码链接复制到剪贴板：[img]${imageItem.url}[/img]`);
+		vscode.window.showInformationMessage(`已将「${imageItem.nodePath.join("/")}」论坛代码链接复制到剪贴板：[img]${imageItem.url}[/img]`);
 	}));
 
 	//新建文件夹
 	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.newImageFolder",()=>{
-		imageLinksProvider.addFolder.bind(imageLinksProvider)(imageLinksTreeView.selection[0]);
+		imageLinksProvider.addNode.bind(imageLinksProvider)(imageLinksTreeView.selection[0]);
 	}));
+	//新建图片结点
+	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.newImageLink",()=>{
+		imageLinksProvider.addNode.bind(imageLinksProvider)(imageLinksTreeView.selection[0],true);
+	}));
+
 
 
 	//事件
