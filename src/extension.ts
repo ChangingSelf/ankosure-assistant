@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { ImageItem, ImageLinksProvider } from './providers/ImageLinksProvider';
+import { loadSettings } from './utils';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -48,6 +49,19 @@ export function activate(context: vscode.ExtensionContext) {
         fs.writeFileSync(uri.fsPath, "{}", { encoding: "utf8" });
         //写入设置
         vscode.workspace.getConfiguration().update("ankosure-assistant.imagesDataPath", uri.fsPath, true);
+    }));
+    //选择图片数据文件
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.selectImageDataFile", async () => {
+        let uris = await vscode.window.showOpenDialog({
+            canSelectFiles: true,
+            openLabel:"选择数据文件",
+            filters: { "json": ["json"] },
+            title: "选择数据文件",
+            defaultUri: vscode.Uri.file(loadSettings().imagesDataPath)
+        });
+        if (!uris) { return; }
+        //写入设置
+        vscode.workspace.getConfiguration().update("ankosure-assistant.imagesDataPath", uris[0].fsPath, true);
     }));
 
     //复制链接的命令

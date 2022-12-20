@@ -68,7 +68,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         this._onDidChangeTreeData.fire();
         let dataFilePath = this.getDataFilePath();
         if (dataFilePath && imageLinksTreeView) {
-            imageLinksTreeView.message = `当前数据源:${dataFilePath}`;
+            imageLinksTreeView.message = `当前数据源:\n${dataFilePath}`;
         }
     }
 

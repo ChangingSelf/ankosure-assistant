@@ -34,6 +34,11 @@
         "icon": "$(terminal-new)"
       },
       {
+        "command": "ankosure-assistant.selectImageDataFile",
+        "title": "选择数据文件",
+        "icon": "$(settings)"
+      },
+      {
         "command": "ankosure-assistant.copyImageLink",
         "title": "复制图片链接",
         "icon": "$(explorer-view-icon)"
@@ -87,22 +92,27 @@
         {
           "command": "ankosure-assistant.refreshTreeView",
           "when": "view == ankosure-images",
-          "group": "navigation"
+          "group": "navigation@1"
         },
         {
           "command": "ankosure-assistant.newImageFolder",
           "when": "view == ankosure-images",
-          "group": "navigation"
+          "group": "navigation@2"
         },
         {
           "command": "ankosure-assistant.newImageLink",
           "when": "view == ankosure-images",
-          "group": "navigation"
+          "group": "navigation@3"
+        },
+        {
+          "command": "ankosure-assistant.selectImageDataFile",
+          "when": "view == ankosure-images",
+          "group": "navigation@4"
         },
         {
           "command": "ankosure-assistant.newImageDataFile",
           "when": "view == ankosure-images",
-          "group": "navigation"
+          "group": "navigation@5"
         }
       ],
       "view/item/context": [
