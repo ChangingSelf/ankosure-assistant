@@ -1,160 +1,160 @@
 {
-	"name": "ankosure-assistant",
-	"displayName": "安科助手",
-	"description": "辅助安科(あんこスレ)的创作",
-	"version": "0.0.2",
-	"engines": {
-		"vscode": "^1.74.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"publisher": "yxChangingSelf",
-	"license": "MIT",
-	"repository": {
-		"url": "https://github.com/ChangingSelf/ankosure-assistant"
-	},
-	"activationEvents": [],
-	"main": "./out/extension.js",
-	"icon": "images/icon.png",
-	"contributes": {
-		"commands": [
-			{
-				"command": "ankosure-assistant.helloWorld",
-				"title": "测试命令"
-			}
-			,{
-				"command": "ankosure-assistant.refreshTreeView",
-				"title": "刷新侧边栏视图",
-				"icon":"$(refresh)"
-			}
-			,{
-				"command": "ankosure-assistant.newImageDataFile",
-				"title": "新建数据文件",
-				"icon":"$(terminal-new)"
-			}
-			,{
-				"command": "ankosure-assistant.copyImageLink",
-				"title": "复制图片链接",
-				"icon":"$(explorer-view-icon)"
-			}
-			,{
-				"command": "ankosure-assistant.copyImageLinkCode",
-				"title": "复制论坛代码图片链接",
-				"icon":"$(notebook-open-as-text)"
-			}
-			,{
-				"command": "ankosure-assistant.newImageFolder",
-				"title": "新建文件夹",
-				"icon":"$(new-folder)"
-			}
-			,{
-				"command": "ankosure-assistant.newImageLink",
-				"title": "新建图片链接结点",
-				"icon":"$(new-file)"
-			}
-			,{
-				"command": "ankosure-assistant.delImageNode",
-				"title": "删除图片资源结点",
-				"icon":"$(trash)"
-			}
-		],
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "ankosure-explorer",
-					"title": "安科资源管理器",
-					"icon": "images/icon.svg"
-				}
-			]
-		},
-		"views": {
-			"ankosure-explorer": [
-				{
-					"id": "ankosure-images",
-					"name": "图片链接管理"
-				}
-			]
-		},
-		"viewsWelcome": [
-			{
-				"view":"ankosure-images",
-				"contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径\n[打开设置](command:workbench.action.openSettings2)\n[新建数据文件](command:ankosure-assistant.newImageDataFile)"
-			}	
-		],
-		"menus": {
-			"view/title": [
-				{
-					"command": "ankosure-assistant.refreshTreeView",
-					"when": "view == ankosure-images",
-					"group": "navigation"
-				}
-				,{
-					"command": "ankosure-assistant.newImageFolder",
-					"when": "view == ankosure-images",
-					"group": "navigation"
-				}
-				,{
-					"command": "ankosure-assistant.newImageLink",
-					"when": "view == ankosure-images",
-					"group": "navigation"
-				}
-				,{
-					"command": "ankosure-assistant.newImageDataFile",
-					"when": "view == ankosure-images",
-					"group": "navigation"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "ankosure-assistant.copyImageLink",
-					"when": "view == ankosure-images && viewItem == image",
-					"group": "inline"
-				}
-				,{
-					"command": "ankosure-assistant.copyImageLinkCode",
-					"when": "view == ankosure-images && viewItem == image",
-					"group": "inline"
-				}
-				,{
-					"command": "ankosure-assistant.delImageNode",
-					"when": "view == ankosure-images",
-					"group": "inline"
-				}
-			]
-		},
-		"configuration": {
-			"order": 0,
-			"title": "安科助手",
-			"properties": {
-				"ankosure-assistant.imagesDataPath":{
-					"order":0,
-					"markdownDescription": "存放图片链接数据的json文件的路径，需要包含文件名。例如`F:/images.json`",
-					"type":"string",
-					"default":""
-				}
-			}
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/vscode": "^1.74.0",
-		"@types/glob": "^7.2.0",
-		"@types/mocha": "^9.1.1",
-		"@types/node": "16.x",
-		"@typescript-eslint/eslint-plugin": "^5.27.0",
-		"@typescript-eslint/parser": "^5.27.0",
-		"eslint": "^8.16.0",
-		"glob": "^8.0.3",
-		"mocha": "^10.0.0",
-		"typescript": "^4.7.2",
-		"@vscode/test-electron": "^2.1.3"
-	}
+  "name": "ankosure-assistant",
+  "displayName": "安科助手",
+  "description": "辅助安科(あんこスレ)的创作",
+  "version": "0.0.2",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "publisher": "yxChangingSelf",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/ChangingSelf/ankosure-assistant"
+  },
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "icon": "images/icon.png",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ankosure-assistant.helloWorld",
+        "title": "测试命令"
+      },
+      {
+        "command": "ankosure-assistant.refreshTreeView",
+        "title": "刷新侧边栏视图",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ankosure-assistant.newImageDataFile",
+        "title": "新建数据文件",
+        "icon": "$(terminal-new)"
+      },
+      {
+        "command": "ankosure-assistant.copyImageLink",
+        "title": "复制图片链接",
+        "icon": "$(explorer-view-icon)"
+      },
+      {
+        "command": "ankosure-assistant.copyImageLinkCode",
+        "title": "复制论坛代码图片链接",
+        "icon": "$(notebook-open-as-text)"
+      },
+      {
+        "command": "ankosure-assistant.newImageFolder",
+        "title": "新建文件夹",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "ankosure-assistant.newImageLink",
+        "title": "新建图片链接结点",
+        "icon": "$(new-file)"
+      },
+      {
+        "command": "ankosure-assistant.delImageNode",
+        "title": "删除图片资源结点",
+        "icon": "$(trash)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ankosure-explorer",
+          "title": "安科资源管理器",
+          "icon": "images/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ankosure-explorer": [
+        {
+          "id": "ankosure-images",
+          "name": "图片链接管理"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "ankosure-images",
+        "contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径\n[打开设置](command:workbench.action.openSettings2)\n[新建数据文件](command:ankosure-assistant.newImageDataFile)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "ankosure-assistant.refreshTreeView",
+          "when": "view == ankosure-images",
+          "group": "navigation"
+        },
+        {
+          "command": "ankosure-assistant.newImageFolder",
+          "when": "view == ankosure-images",
+          "group": "navigation"
+        },
+        {
+          "command": "ankosure-assistant.newImageLink",
+          "when": "view == ankosure-images",
+          "group": "navigation"
+        },
+        {
+          "command": "ankosure-assistant.newImageDataFile",
+          "when": "view == ankosure-images",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "ankosure-assistant.copyImageLink",
+          "when": "view == ankosure-images && viewItem == image",
+          "group": "inline"
+        },
+        {
+          "command": "ankosure-assistant.copyImageLinkCode",
+          "when": "view == ankosure-images && viewItem == image",
+          "group": "inline"
+        },
+        {
+          "command": "ankosure-assistant.delImageNode",
+          "when": "view == ankosure-images",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "order": 0,
+      "title": "安科助手",
+      "properties": {
+        "ankosure-assistant.imagesDataPath": {
+          "order": 0,
+          "markdownDescription": "存放图片链接数据的json文件的路径，需要包含文件名。例如`F:/images.json`",
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.0.0",
+    "typescript": "^4.7.2",
+    "@vscode/test-electron": "^2.1.3"
+  }
 }
