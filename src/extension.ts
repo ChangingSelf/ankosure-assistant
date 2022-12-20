@@ -23,11 +23,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	//侧边栏自定义资源管理器
 	let imageLinksProvider = new ImageLinksProvider();
-	vscode.window.createTreeView('ankosure-images', {
+	
+	let imageLinksTreeView =  vscode.window.createTreeView('ankosure-images', {
 		treeDataProvider: imageLinksProvider,
 		showCollapseAll : true,
 	});
-
+	imageLinksTreeView.message = `当前数据源:${imageLinksProvider.getDataFilePath()}`;
+	
 	//刷新视图
 	context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView', 
 	() =>{
@@ -44,6 +46,11 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage(`已将论坛代码链接复制到剪贴板：[img]${imageItem.url}[/img]`);
 	}));
 
+	//新建文件夹
+	context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.newImageFolder",()=>{
+		imageLinksProvider.addFolder.bind(imageLinksProvider)(imageLinksTreeView.selection[0]);
+	}));
+
 
 	//事件
 	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event)=>{
@@ -57,6 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
 		imageLinksProvider.refresh();
+		imageLinksTreeView.message = `当前数据源:${imageLinksProvider.getDataFilePath()}`;
 	}));
 }
 

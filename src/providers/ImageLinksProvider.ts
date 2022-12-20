@@ -17,12 +17,15 @@ import { loadSettings } from '../utils';
 }
  */
 
-
+/**
+ * 图片结点
+ */
 export class ImageItem extends vscode.TreeItem{
     constructor(
         public readonly label: string,
         public url:string = "",
         public children:ImageItem[] = [],
+        public nodePath:string[] = [],
         public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.None
     ){
         super(label,collapsibleState);
@@ -59,9 +62,38 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
 
     /**
      * 添加图片结点
+     * @param parent 给parent添加结点
      */
-    addNode(){
-        
+    async addFolder(parent?:ImageItem){
+        let name = await vscode.window.showInputBox({placeHolder:"请输入文件夹名称",prompt:"文件夹名称"});
+        if(!name){return;}
+
+        let filePath = this.getDataFilePath();
+        let jsonObj = JSON.parse(fs.readFileSync(filePath,{encoding:'utf8', flag:'r'}));
+        if(typeof jsonObj === "object"){
+            //重名检查
+            if(name in jsonObj){
+                vscode.window.showInformationMessage(`「${name}」在该层级下已经存在，请换个名字`);
+                return;
+            }
+            //插入
+            if(!parent){
+                jsonObj[name] = {};
+            }else{
+                let nodePath = parent.nodePath;
+                let obj = jsonObj;
+                if(parent.url){
+                    //如果是叶子结点，就在其同级插入
+                    nodePath = nodePath.slice(0,-1);
+                }
+                for(let key of nodePath){
+                    //沿着路径一直走
+                    obj = obj[key];
+                }
+                obj[name] = {};
+            }
+            fs.writeFileSync(filePath,JSON.stringify(jsonObj,null,4),{encoding:"utf8"});
+        }
     }
 
     
@@ -72,17 +104,18 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
      * @param data JSON对象
      * @returns 对应的图片结点
      */
-    parseJsonData(data:any):ImageItem[]{
+    parseJsonData(data:any,nodePath:string[]=[]):ImageItem[]{
         let result:ImageItem[] = [];
         if(data){
             if(typeof data === 'object'){
                 Object.entries(data).forEach(([k,v])=>{
+                    //将当前结点的key加入路径
                     if(typeof v === 'object'){
                         //如果是对象，则为非叶结点
-                        result.push(new ImageItem(k,"",this.parseJsonData(v),vscode.TreeItemCollapsibleState.Collapsed));
+                        result.push(new ImageItem(k,"",this.parseJsonData(v,[...nodePath,k]),[...nodePath,k],vscode.TreeItemCollapsibleState.Collapsed));
                     }else if(typeof v === "string"){
                         //如果是字符串，则为叶子结点
-                        result.push(new ImageItem(k,v,[]));
+                        result.push(new ImageItem(k,v,[],[...nodePath,k]));
                     }
                 });
             }

@@ -37,6 +37,11 @@
 				"title": "复制论坛代码图片链接",
 				"icon":"$(notebook-open-as-text)"
 			}
+			,{
+				"command": "ankosure-assistant.newImageFolder",
+				"title": "新建文件夹",
+				"icon":"$(new-folder)"
+			}
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -65,6 +70,11 @@
 			"view/title": [
 				{
 					"command": "ankosure-assistant.refreshTreeView",
+					"when": "view == ankosure-images",
+					"group": "navigation"
+				}
+				,{
+					"command": "ankosure-assistant.newImageFolder",
 					"when": "view == ankosure-images",
 					"group": "navigation"
 				}
