@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import { loadSettings } from './utils';
 
 /**
  * 骰子，出目范围：[1,面数]
@@ -76,13 +78,18 @@ export class DiceGroup {
 /**
  * 骰点表达式
  * 目前支持的操作数：骰子、整数
+ * 目前支持的运算符：+、-
  */
 export class DiceExpr {
+    public elementList: (DiceGroup | number | string)[] = [];//组成表达式的元素的列表
+    public value: number | null = null;//最终结果
+    public resultText: string = "";//结果文本，相当于toString()得到的文本，专门设置这个属性是为了存储到json时方便
+    public timestamp: number = Date.now();//时间戳
+
     constructor(
         public expr: string,//骰点表达式
         public reason: string = "",//掷骰原因
-        public elementList: (DiceGroup | number | string)[] = [],//组成表达式的元素的列表
-        public value: number | null = null,//最终结果
+        public check: number = -1,//检定值，负数代表没有设置
     ) {
         let elements = this.expr.split(/([+\-])/g);//添加捕获分组，则会保留匹配到的分隔符
         elements.push("#");//加个符号作为结尾
@@ -143,6 +150,8 @@ export class DiceExpr {
         } else {
             this.value = null;
         }
+
+        this.resultText = this.toString();
     }
 
     toString() {
@@ -183,6 +192,18 @@ export class DiceMaid {
      */
     static communicate(input: string): string {
         let expr = new DiceExpr(input);
+
+        //写入数据文件
+        let diceLogDataPath = loadSettings().diceLogDataPath;
+        if (fs.existsSync(diceLogDataPath)) {
+            let data = JSON.parse(fs.readFileSync(diceLogDataPath, { encoding: "utf8" }));
+            if (Array.isArray(data)) {
+                data.push(expr);
+                fs.writeFileSync(diceLogDataPath, JSON.stringify(data, null, 4), { encoding: "utf8" });
+            }
+        }
+
+
         return `${expr}`;
     }
 }

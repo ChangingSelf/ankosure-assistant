@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { ImageItem, ImageLinksProvider } from './providers/ImageLinksProvider';
 import { loadSettings } from './utils';
 import { DiceMaid } from './DiceMaid';
+import { DiceLogProvider } from './providers/DiceLogProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -34,15 +35,23 @@ export function activate(context: vscode.ExtensionContext) {
 
     //侧边栏自定义资源管理器
     let imageLinksProvider = new ImageLinksProvider();
-
     let imageLinksTreeView = vscode.window.createTreeView('ankosure-images', {
         treeDataProvider: imageLinksProvider,
         showCollapseAll: true,
     });
 
+
+    //侧边栏骰子历史
+    let diceLogProvider = new DiceLogProvider();
+    let dicelogTreeView = vscode.window.createTreeView('ankosure-dice-log', {
+        treeDataProvider: diceLogProvider,
+        showCollapseAll: true
+    });
+
     //刷新视图
     context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView', () => {
         imageLinksProvider.refresh(imageLinksTreeView);
+        diceLogProvider.refresh();
     }));
 
     //新建图片数据文件
@@ -100,15 +109,19 @@ export function activate(context: vscode.ExtensionContext) {
     //事件
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
+        diceLogProvider.refresh();
     }));
     context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
+        diceLogProvider.refresh();
     }));
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
+        diceLogProvider.refresh();
     }));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
         imageLinksProvider.refresh(imageLinksTreeView);
+        diceLogProvider.refresh();
     }));
 }
 

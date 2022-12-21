@@ -83,6 +83,10 @@
         {
           "id": "ankosure-images",
           "name": "图片链接管理"
+        },
+        {
+          "id": "ankosure-dice-log",
+          "name": "历史骰点"
         }
       ]
     },
@@ -145,6 +149,12 @@
         "ankosure-assistant.imagesDataPath": {
           "order": 0,
           "markdownDescription": "存放图片链接数据的json文件的路径，需要包含文件名。例如`F:/images.json`",
+          "type": "string",
+          "default": ""
+        },
+        "ankosure-assistant.diceLogDataPath": {
+          "order": 1,
+          "markdownDescription": "存放骰子历史数据的json文件的路径，需要包含文件名。例如`F:/diceLog.json`",
           "type": "string",
           "default": ""
         }
