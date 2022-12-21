@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { ImageItem, ImageLinksProvider } from './providers/ImageLinksProvider';
 import { loadSettings } from './utils';
 import { DiceMaid } from './DiceMaid';
-import { DiceLogProvider } from './providers/DiceLogProvider';
+import { DiceLogItem, DiceLogProvider } from './providers/DiceLogProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -89,6 +89,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyImageLinkCode", (imageItem: ImageItem) => {
         vscode.env.clipboard.writeText(`[img]${imageItem.url}[/img]`);
         vscode.window.showInformationMessage(`已将「${imageItem.nodePath.join("/")}」论坛代码链接复制到剪贴板：[img]${imageItem.url}[/img]`);
+    }));
+
+    //复制骰子历史项的命令
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyDiceLog", (diceLogItem: DiceLogItem) => {
+        vscode.env.clipboard.writeText(diceLogItem.diceExpr.resultText);
+        vscode.window.showInformationMessage(`已将骰点记录复制到剪贴板：${diceLogItem.diceExpr.resultText}`);
     }));
 
     //新建文件夹

@@ -10,14 +10,17 @@ export class DiceLogItem extends vscode.TreeItem {
     ) {
         let label = diceExpr.reason ? diceExpr.reason : diceExpr.resultText;
         super(label, vscode.TreeItemCollapsibleState.None);
-        this.tooltip = `[${new Date(diceExpr.timestamp).toLocaleDateString()} ${new Date(diceExpr.timestamp).toLocaleTimeString()}]\n${diceExpr.resultText}`
+        let timeStr = `${new Date(diceExpr.timestamp).toLocaleDateString()} ${new Date(diceExpr.timestamp).toLocaleTimeString()}`;
+        this.tooltip = `[${timeStr}]\n${diceExpr.resultText}`;
+
+        this.description = new Date(diceExpr.timestamp).toLocaleTimeString();
     }
 
 }
 
 export class DiceLogProvider implements vscode.TreeDataProvider<DiceLogItem>{
 
-    private _onDidChangeTreeData: vscode.EventEmitter<DiceLogItem | undefined | null | void> = new vscode.EventEmitter<ImageItem | undefined | null | void>();
+    private _onDidChangeTreeData: vscode.EventEmitter<DiceLogItem | undefined | null | void> = new vscode.EventEmitter<DiceLogItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<DiceLogItem | undefined | null | void> = this._onDidChangeTreeData.event;
     refresh(imageLinksTreeView?: vscode.TreeView<DiceLogItem>): void {
         this._onDidChangeTreeData.fire();

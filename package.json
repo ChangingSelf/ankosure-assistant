@@ -67,6 +67,11 @@
         "command": "ankosure-assistant.diceMaid",
         "title": "掷骰",
         "icon": "$(primitive-square)"
+      },
+      {
+        "command": "ankosure-assistant.copyDiceLog",
+        "title": "复制骰点记录",
+        "icon": "$(explorer-view-icon)"
       }
     ],
     "viewsContainers": {
@@ -100,7 +105,7 @@
       "view/title": [
         {
           "command": "ankosure-assistant.refreshTreeView",
-          "when": "view == ankosure-images",
+          "when": "view == ankosure-images || view == ankosure-dice-log",
           "group": "navigation@1"
         },
         {
@@ -138,6 +143,11 @@
         {
           "command": "ankosure-assistant.delImageNode",
           "when": "view == ankosure-images",
+          "group": "inline"
+        },
+        {
+          "command": "ankosure-assistant.copyDiceLog",
+          "when": "view == ankosure-dice-log",
           "group": "inline"
         }
       ]
