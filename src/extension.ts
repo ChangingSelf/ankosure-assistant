@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { ImageItem, ImageLinksProvider } from './providers/ImageLinksProvider';
 import { loadSettings } from './utils';
+import { DiceMaid } from './DiceMaid';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -22,6 +23,14 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(disposable);
 
+    //骰娘
+    context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.diceMaid', async () => {
+        let input = await vscode.window.showInputBox({ "placeHolder": "输入掷骰表达式" });
+        if (!input) { return; }
+        let output = DiceMaid.communicate(input);
+        vscode.window.showInformationMessage(output);
+    }));
+
 
     //侧边栏自定义资源管理器
     let imageLinksProvider = new ImageLinksProvider();
@@ -32,10 +41,9 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     //刷新视图
-    context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView',
-        () => {
-            imageLinksProvider.refresh(imageLinksTreeView);
-        }));
+    context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView', () => {
+        imageLinksProvider.refresh(imageLinksTreeView);
+    }));
 
     //新建图片数据文件
     context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.newImageDataFile", async () => {
@@ -54,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.selectImageDataFile", async () => {
         let uris = await vscode.window.showOpenDialog({
             canSelectFiles: true,
-            openLabel:"选择数据文件",
+            openLabel: "选择数据文件",
             filters: { "json": ["json"] },
             title: "选择数据文件",
             defaultUri: vscode.Uri.file(loadSettings().imagesDataPath)

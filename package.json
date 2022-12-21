@@ -62,6 +62,11 @@
         "command": "ankosure-assistant.delImageNode",
         "title": "删除图片资源结点",
         "icon": "$(trash)"
+      },
+      {
+        "command": "ankosure-assistant.diceMaid",
+        "title": "掷骰",
+        "icon": "$(primitive-square)"
       }
     ],
     "viewsContainers": {
