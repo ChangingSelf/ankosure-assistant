@@ -14,6 +14,7 @@ export class DiceLogItem extends vscode.TreeItem {
         this.tooltip = `[${timeStr}]\n${diceExpr.resultText}`;
 
         this.description = new Date(diceExpr.timestamp).toLocaleTimeString();
+        this.id = diceExpr.timestamp.toString();
     }
 
 }
@@ -22,8 +23,12 @@ export class DiceLogProvider implements vscode.TreeDataProvider<DiceLogItem>{
 
     private _onDidChangeTreeData: vscode.EventEmitter<DiceLogItem | undefined | null | void> = new vscode.EventEmitter<DiceLogItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<DiceLogItem | undefined | null | void> = this._onDidChangeTreeData.event;
-    refresh(imageLinksTreeView?: vscode.TreeView<DiceLogItem>): void {
+    refresh(treeView?: vscode.TreeView<DiceLogItem>): void {
         this._onDidChangeTreeData.fire();
+        let dataFilePath = this.getDataFilePath();
+        if (dataFilePath && treeView) {
+            treeView.message = `当前数据源:\n${dataFilePath}`;
+        }
     }
 
     /**
@@ -32,6 +37,32 @@ export class DiceLogProvider implements vscode.TreeDataProvider<DiceLogItem>{
      */
     getDataFilePath() {
         return loadSettings().diceLogDataPath;
+    }
+
+    /**
+     * 删除结点
+     * @param node 
+     */
+    async delNode(node: DiceLogItem) {
+        if (!node) { return; }
+
+        let selection = await vscode.window.showInformationMessage(`你确定要删除「${node.diceExpr.resultText}」吗？`, "确定", "取消");
+        if (selection !== "确定") { return; }
+
+        let filePath = this.getDataFilePath();
+        let jsonObj = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8', flag: 'r' }));
+        if (!Array.isArray(jsonObj)) {
+            return;
+        }
+        let index = jsonObj.findIndex(x => x.timestamp.toString() === node.id);
+        if (index === -1) {
+            return;
+        }
+
+        jsonObj.splice(index, 1);
+
+        fs.writeFileSync(filePath, JSON.stringify(jsonObj, null, 4), { encoding: "utf8" });
+        this.refresh();
     }
 
     /**

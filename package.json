@@ -2,7 +2,7 @@
   "name": "ankosure-assistant",
   "displayName": "安科助手",
   "description": "辅助安科(あんこスレ)的创作",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -66,12 +66,27 @@
       {
         "command": "ankosure-assistant.diceMaid",
         "title": "掷骰",
-        "icon": "$(primitive-square)"
+        "icon": "$(diff-modified)"
       },
       {
         "command": "ankosure-assistant.copyDiceLog",
         "title": "复制骰点记录",
         "icon": "$(explorer-view-icon)"
+      },
+      {
+        "command": "ankosure-assistant.newDiceLogFile",
+        "title": "新建骰点历史数据文件",
+        "icon": "$(terminal-new)"
+      },
+      {
+        "command": "ankosure-assistant.selectDiceLogFile",
+        "title": "选择骰点历史数据文件",
+        "icon": "$(settings)"
+      },
+      {
+        "command": "ankosure-assistant.delDiceLog",
+        "title": "删除骰点记录",
+        "icon": "$(trash)"
       }
     ],
     "viewsContainers": {
@@ -91,14 +106,18 @@
         },
         {
           "id": "ankosure-dice-log",
-          "name": "历史骰点"
+          "name": "骰点记录"
         }
       ]
     },
     "viewsWelcome": [
       {
         "view": "ankosure-images",
-        "contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径\n[打开设置](command:workbench.action.openSettings2)\n[新建数据文件](command:ankosure-assistant.newImageDataFile)"
+        "contents": "没有读取到图片资源，请检查是否配置好了图片资源的数据文件的路径，以及数据文件中是否有内容\n[打开设置](command:workbench.action.openSettings2)\n[新建数据文件](command:ankosure-assistant.newImageDataFile)\n[选择数据文件](command:ankosure-assistant.selectImageDataFile)"
+      },
+      {
+        "view": "ankosure-dice-log",
+        "contents": "没有读取到骰点记录，请检查是否配置好了骰点记录的数据文件的路径，以及数据文件中是否有内容\n[打开设置](command:workbench.action.openSettings2)\n[新建数据文件](command:ankosure-assistant.newDiceLogFile)\n[选择数据文件](command:ankosure-assistant.selectDiceLogFile)"
       }
     ],
     "menus": {
@@ -127,6 +146,21 @@
           "command": "ankosure-assistant.newImageDataFile",
           "when": "view == ankosure-images",
           "group": "navigation@5"
+        },
+        {
+          "command": "ankosure-assistant.selectDiceLogFile",
+          "when": "view == ankosure-dice-log",
+          "group": "navigation@4"
+        },
+        {
+          "command": "ankosure-assistant.newDiceLogFile",
+          "when": "view == ankosure-dice-log",
+          "group": "navigation@5"
+        },
+        {
+          "command": "ankosure-assistant.diceMaid",
+          "when": "view == ankosure-dice-log",
+          "group": "navigation@1"
         }
       ],
       "view/item/context": [
@@ -147,6 +181,11 @@
         },
         {
           "command": "ankosure-assistant.copyDiceLog",
+          "when": "view == ankosure-dice-log",
+          "group": "inline"
+        },
+        {
+          "command": "ankosure-assistant.delDiceLog",
           "when": "view == ankosure-dice-log",
           "group": "inline"
         }

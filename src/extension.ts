@@ -51,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
     //刷新视图
     context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView', () => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh();
+        diceLogProvider.refresh(dicelogTreeView);
     }));
 
     //新建图片数据文件
@@ -63,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
         if (!uri) { return; }
         //创建文件
-        fs.writeFileSync(uri.fsPath, "{}", { encoding: "utf8" });
+        fs.writeFileSync(uri.fsPath, "[]", { encoding: "utf8" });
         //写入设置
         vscode.workspace.getConfiguration().update("ankosure-assistant.imagesDataPath", uri.fsPath, true);
     }));
@@ -80,6 +80,36 @@ export function activate(context: vscode.ExtensionContext) {
         //写入设置
         vscode.workspace.getConfiguration().update("ankosure-assistant.imagesDataPath", uris[0].fsPath, true);
     }));
+
+
+    //新建骰点记录数据文件
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.newDiceLogFile", async () => {
+        let uri = await vscode.window.showSaveDialog({
+            filters: { "json": ["json"] },
+            title: "选择保存位置",
+            defaultUri: vscode.workspace.workspaceFolders?.at(0)?.uri
+        });
+        if (!uri) { return; }
+        //创建文件
+        fs.writeFileSync(uri.fsPath, "{}", { encoding: "utf8" });
+        //写入设置
+        vscode.workspace.getConfiguration().update("ankosure-assistant.diceLogDataPath", uri.fsPath, true);
+    }));
+    //选择骰点记录数据文件
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.selectDiceLogFile", async () => {
+        let uris = await vscode.window.showOpenDialog({
+            canSelectFiles: true,
+            openLabel: "选择数据文件",
+            filters: { "json": ["json"] },
+            title: "选择数据文件",
+            defaultUri: vscode.Uri.file(loadSettings().imagesDataPath)
+        });
+        if (!uris) { return; }
+        //写入设置
+        vscode.workspace.getConfiguration().update("ankosure-assistant.diceLogDataPath", uris[0].fsPath, true);
+    }));
+
+
 
     //复制链接的命令
     context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.copyImageLink", (imageItem: ImageItem) => {
@@ -110,24 +140,29 @@ export function activate(context: vscode.ExtensionContext) {
         imageLinksProvider.delNode.bind(imageLinksProvider)(node);
     }));
 
+    //删除骰点记录
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.delDiceLog", (node: DiceLogItem) => {
+        diceLogProvider.delNode.bind(diceLogProvider)(node);
+    }));
+
 
 
     //事件
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh();
+        diceLogProvider.refresh(dicelogTreeView);
     }));
     context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh();
+        diceLogProvider.refresh(dicelogTreeView);
     }));
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh();
+        diceLogProvider.refresh(dicelogTreeView);
     }));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh();
+        diceLogProvider.refresh(dicelogTreeView);
     }));
 }
 
