@@ -39,6 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
     let imageLinksTreeView = vscode.window.createTreeView('ankosure-images', {
         treeDataProvider: imageLinksProvider,
         showCollapseAll: true,
+        canSelectMany: true,
+        dragAndDropController: imageLinksProvider
     });
 
 

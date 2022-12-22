@@ -40,6 +40,7 @@ export class ImageItem extends vscode.TreeItem {
             this.tooltip = `子项数:${children.length}`;
             this.iconPath = vscode.ThemeIcon.Folder;
         }
+        this.id = this.getNodePathStr();
     }
 
     /**
@@ -57,10 +58,25 @@ export class ImageItem extends vscode.TreeItem {
     getNodePathStr(): string {
         return this.nodePath.join("/");
     }
+
+    /**
+     * 返回存入json文件的object形式或者string
+     */
+    toObjOrString() {
+        if (this.isImage()) {
+            return this.url;
+        }
+
+        let result: { [key: string]: any } = {};
+        for (let child of this.children) {
+            result[child.label] = child.toObjOrString();
+        }
+        return result;
+    }
 }
 
 
-export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
+export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>, vscode.TreeDragAndDropController<ImageItem>{
 
     private _onDidChangeTreeData: vscode.EventEmitter<ImageItem | undefined | null | void> = new vscode.EventEmitter<ImageItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<ImageItem | undefined | null | void> = this._onDidChangeTreeData.event;
@@ -80,6 +96,14 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         return loadSettings().imagesDataPath;
     }
 
+    loadData() {
+        return JSON.parse(fs.readFileSync(this.getDataFilePath(), { encoding: 'utf8', flag: 'r' }));
+    }
+
+    saveData(jsonObj: any) {
+        fs.writeFileSync(this.getDataFilePath(), JSON.stringify(jsonObj, null, 4), { encoding: "utf8" });
+    }
+
     /**
      * 添加图片结点
      * @param parent 给parent添加结点
@@ -94,8 +118,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
             if (!url) { return; }
         }
 
-        let filePath = this.getDataFilePath();
-        let jsonObj = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8', flag: 'r' }));
+        let jsonObj = this.loadData();
         if (typeof jsonObj === "object") {
             //重名检查
             if (name in jsonObj) {
@@ -127,7 +150,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
                     obj[name] = {};
                 }
             }
-            fs.writeFileSync(filePath, JSON.stringify(jsonObj, null, 4), { encoding: "utf8" });
+            this.saveData(jsonObj);
             this.refresh();
         }
     }
@@ -143,7 +166,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         if (selection !== "确定") { return; }
 
         let filePath = this.getDataFilePath();
-        let jsonObj = JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8', flag: 'r' }));
+        let jsonObj = this.loadData();
 
         let nodePath = node.nodePath.slice(0, -1);
         let obj = jsonObj;
@@ -152,7 +175,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
             obj = obj[key];
         }
         delete obj[node.label];
-        fs.writeFileSync(filePath, JSON.stringify(jsonObj, null, 4), { encoding: "utf8" });
+        this.saveData(jsonObj);
         this.refresh();
     }
 
@@ -188,7 +211,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         if (!element) {
             //获取根结点
             try {
-                children = this.parseJsonData(JSON.parse(fs.readFileSync(this.getDataFilePath(), { encoding: 'utf8', flag: 'r' })));
+                children = this.parseJsonData(this.loadData());
             } catch (error) {
                 console.log(error);
             }
@@ -199,4 +222,65 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
         }
         return children;
     }
+
+    /**
+     * 处理拖放的部分
+     */
+    dropMimeTypes: readonly string[] = ['application/vnd.code.tree.ankosure-images'];
+    dragMimeTypes: readonly string[] = ['image/jpeg'];
+    /**
+     * 以下注释是个人理解
+     * 大概是用来决定拖动TreeItem的时候，将哪些数据进行转移，将需要转移的数据存储进dataTransfer里面
+     * @param source 选中的数据项
+     * @param dataTransfer 像是一个Map，key是MIME类型，value是拖动的数据
+     * @param token 取消令牌
+     */
+    handleDrag(source: readonly ImageItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        dataTransfer.set("application/vnd.code.tree.ankosure-images", new vscode.DataTransferItem(source));
+    }
+    handleDrop(target: ImageItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        const transferItem = dataTransfer.get('application/vnd.code.tree.ankosure-images');
+        if (!transferItem || !target || target.isImage()) {
+            return;
+        }
+
+        const sources: ImageItem[] = transferItem.value;
+
+        let root = this.loadData();
+
+        //沿着目标结点的路径往下走，找到目标结点
+        let targetObj = root;
+        //前面已经确保了不是图片结点，所以可以一路走到底
+        for (let key of target.nodePath) {
+            targetObj = targetObj[key];
+        }
+
+        //加入到该文件夹
+        sources.forEach(async item => {
+            if (!(item.label in targetObj)) {
+                //没有重名
+                targetObj[item.label] = item.toObjOrString();
+            } else {
+                //重名
+                let selection = await vscode.window.showInformationMessage(`「${item.label}」存在重名，请选择你的操作`, "覆盖", "取消");
+                if (selection === "覆盖") {
+                    targetObj[item.label] = item.toObjOrString();
+                }
+            }
+        });
+
+        //删除原有结点
+        for (let source of sources) {
+            let sourceParentObj = root;
+            for (let key of source.nodePath.slice(0, -1)) {
+                sourceParentObj = sourceParentObj[key];
+            }
+            delete sourceParentObj[source.label];
+        }
+
+        this.saveData(root);
+        this.refresh();
+    }
+
+
 }

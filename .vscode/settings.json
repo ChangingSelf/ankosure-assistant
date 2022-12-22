@@ -11,7 +11,7 @@
     "cSpell.words": [
         "ankosure"
     ],
-    "commentTranslate.hover.enabled": false,
+    "commentTranslate.hover.enabled": true,
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true
 }
