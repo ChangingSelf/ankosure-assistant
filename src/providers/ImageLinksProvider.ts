@@ -85,12 +85,12 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>{
      * @param parent 给parent添加结点
      */
     async addNode(parent?: ImageItem, isImage: boolean = false) {
-        let name = await vscode.window.showInputBox({ placeHolder: `请输入${isImage ? "图片" : "文件夹"}名称`, prompt: `${isImage ? "图片" : "文件夹"}名称` });
+        let name = await vscode.window.showInputBox({ placeHolder: `请输入${isImage ? "图片" : "文件夹"}名称`, prompt: `${isImage ? "图片" : "文件夹"}名称`, ignoreFocusOut: true });
         if (!name) { return; }
 
         let url: string | undefined;
         if (isImage) {
-            url = await vscode.window.showInputBox({ placeHolder: "请输入图片的网络链接", prompt: "图片链接" });
+            url = await vscode.window.showInputBox({ placeHolder: "请输入图片的网络链接", prompt: "图片链接", ignoreFocusOut: true });
             if (!url) { return; }
         }
 
