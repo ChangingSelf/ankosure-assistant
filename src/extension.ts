@@ -63,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
         if (!uri) { return; }
         //创建文件
-        fs.writeFileSync(uri.fsPath, "[]", { encoding: "utf8" });
+        fs.writeFileSync(uri.fsPath, "{}", { encoding: "utf8" });
         //写入设置
         vscode.workspace.getConfiguration().update("ankosure-assistant.imagesDataPath", uri.fsPath, true);
     }));
@@ -91,7 +91,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
         if (!uri) { return; }
         //创建文件
-        fs.writeFileSync(uri.fsPath, "{}", { encoding: "utf8" });
+        fs.writeFileSync(uri.fsPath, "[]", { encoding: "utf8" });
         //写入设置
         vscode.workspace.getConfiguration().update("ankosure-assistant.diceLogDataPath", uri.fsPath, true);
     }));
