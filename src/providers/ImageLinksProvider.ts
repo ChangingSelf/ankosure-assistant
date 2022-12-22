@@ -255,28 +255,23 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>, v
             targetObj = targetObj[key];
         }
 
-        //加入到该文件夹
-        sources.forEach(async item => {
-            if (!(item.label in targetObj)) {
+        sources.forEach(source => {
+            //加入到该文件夹
+            if (!(source.label in targetObj)) {
                 //没有重名
-                targetObj[item.label] = item.toObjOrString();
+                targetObj[source.label] = source.toObjOrString();
             } else {
                 //重名
-                let selection = await vscode.window.showInformationMessage(`「${item.label}」存在重名，请选择你的操作`, "覆盖", "取消");
-                if (selection === "覆盖") {
-                    targetObj[item.label] = item.toObjOrString();
-                }
+                vscode.window.showInformationMessage(`「${source.label}」存在重名，已跳过`);
+                return;
             }
-        });
-
-        //删除原有结点
-        for (let source of sources) {
+            //删除原有结点
             let sourceParentObj = root;
             for (let key of source.nodePath.slice(0, -1)) {
                 sourceParentObj = sourceParentObj[key];
             }
             delete sourceParentObj[source.label];
-        }
+        });
 
         this.saveData(root);
         this.refresh();
