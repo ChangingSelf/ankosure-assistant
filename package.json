@@ -2,7 +2,7 @@
   "name": "ankosure-assistant",
   "displayName": "安科助手",
   "description": "辅助安科(あんこスレ)的创作",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -14,7 +14,10 @@
   "repository": {
     "url": "https://github.com/ChangingSelf/ankosure-assistant"
   },
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:plaintext",
+    "onLanguage:markdown"
+  ],
   "main": "./out/extension.js",
   "icon": "images/icon.png",
   "contributes": {
@@ -87,6 +90,10 @@
         "command": "ankosure-assistant.delDiceLog",
         "title": "删除骰点记录",
         "icon": "$(trash)"
+      },
+      {
+        "command": "ankosure-assistant.typeset",
+        "title": "安科助手：用论坛代码排版"
       }
     ],
     "viewsContainers": {
@@ -188,6 +195,13 @@
           "command": "ankosure-assistant.delDiceLog",
           "when": "view == ankosure-dice-log",
           "group": "inline"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "ankosure-assistant.typeset",
+          "when": "resourceLangId == markdown || resourceLangId == plaintext",
+          "group": "navigation@100"
         }
       ]
     },

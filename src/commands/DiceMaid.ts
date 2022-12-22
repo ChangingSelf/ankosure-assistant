@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { loadSettings } from './utils';
+import { loadSettings } from '../utils';
 
 /**
  * 骰子，出目范围：[1,面数]

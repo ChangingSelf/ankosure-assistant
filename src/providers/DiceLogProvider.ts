@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { DiceExpr } from '../DiceMaid';
+import { DiceExpr } from '../commands/DiceMaid';
 import { loadSettings } from '../utils';
 
 
