@@ -240,7 +240,7 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>, v
     }
     handleDrop(target: ImageItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
         const transferItem = dataTransfer.get('application/vnd.code.tree.ankosure-images');
-        if (!transferItem || !target || target.isImage()) {
+        if (!transferItem) {
             return;
         }
 
@@ -250,9 +250,14 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>, v
 
         //沿着目标结点的路径往下走，找到目标结点
         let targetObj = root;
-        //前面已经确保了不是图片结点，所以可以一路走到底
-        for (let key of target.nodePath) {
-            targetObj = targetObj[key];
+        if (target) {
+            if (target.isImage()) {
+                return;
+            }
+            //前面已经确保了不是图片结点，所以可以一路走到底
+            for (let key of target.nodePath) {
+                targetObj = targetObj[key];
+            }
         }
 
         sources.forEach(source => {
