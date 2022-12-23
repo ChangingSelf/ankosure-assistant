@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { loadSettings } from '../utils';
+import { loadSettings, SaveMethod } from '../utils';
 
 
 /**
@@ -18,6 +18,8 @@ export function typeset() {
 
     let doc = editor.document;
     let text = doc.getText();
+    let settings = loadSettings();
+    let saveMethod = settings.typesetSaveMethod;
 
     let optList = [
         {
@@ -29,8 +31,8 @@ export function typeset() {
     ];
 
     vscode.window.showQuickPick(optList, {
-        title: "选择需要进行的排版操作",
-        placeHolder: "将在原文件旁边生成一个新的文件"
+        title: "选择需要进行的排版操作。可以在设置中修改保存方式。",
+        placeHolder: saveMethod === SaveMethod.replace ? "当前保存方式：在原文件上修改，侧边栏的「时间线」视图能找到自动保存的上一个版本" : "当前保存方式：将在原文件旁边生成一个新的文件"
     }).then(async value => {
         if (!value) {
             return;
@@ -46,11 +48,32 @@ export function typeset() {
             return;
         }
 
-        //写入文件
-        let newFileNamePath = path.join(path.dirname(doc.fileName), `${path.basename(doc.fileName, path.extname(doc.fileName))}_${new Date().getTime()}.${path.extname(doc.fileName)}`);
+        if (saveMethod === SaveMethod.replace) {
+            //写回当前文件
+            editor!.edit(editorEdit => {
+                let start = new vscode.Position(0, 0);
+                let end = start.translate(doc.lineCount, doc.getText().length);
+                let replaceRange = new vscode.Range(start, end);
+                editorEdit.replace(replaceRange, newText);
+            }).then(isSuccess => {
+                if (isSuccess) {
+                    vscode.window.showInformationMessage(`已完成操作。如果你已经保存文件无法撤销，可以从侧边栏的“资源管理器”的“时间线”视图找到vscode为你保存的上一个版本`);
 
-        fs.writeFileSync(newFileNamePath, newText);
-        vscode.commands.executeCommand("vscode.diff", doc.uri, vscode.Uri.file(newFileNamePath));
+                } else {
+                    vscode.window.showErrorMessage("编辑失败！");
+                }
+            }, err => {
+                console.error(err);
+                vscode.window.showErrorMessage(err);
+            });
+        } else if (saveMethod === SaveMethod.newFile) {
+            //写入新文件
+            let newFileNamePath = path.join(path.dirname(doc.fileName), `${path.basename(doc.fileName, path.extname(doc.fileName))}_${new Date().getTime()}.${path.extname(doc.fileName)}`);
+
+            fs.writeFileSync(newFileNamePath, newText);
+            vscode.commands.executeCommand("vscode.diff", doc.uri, vscode.Uri.file(newFileNamePath));
+
+        }
     });
 }
 

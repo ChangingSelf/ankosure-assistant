@@ -2,7 +2,7 @@
   "name": "ankosure-assistant",
   "displayName": "安科助手",
   "description": "辅助安科(あんこスレ)的创作",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -220,6 +220,48 @@
           "markdownDescription": "存放骰子历史数据的json文件的路径，需要包含文件名。例如`F:/diceLog.json`",
           "type": "string",
           "default": ""
+        },
+        "ankosure-assistant.typeset.saveMethod": {
+          "order": 1,
+          "markdownDescription": "排版后的保存方式",
+          "type": "string",
+          "default": "替换当前文件内容",
+          "enum": [
+            "替换当前文件内容",
+            "写入新建文件"
+          ],
+          "enumDescriptions": [
+            "将在原文件上修改，侧边栏的「资源管理器」的「时间线」视图能找到自动保存的上一个版本",
+            "会在当前文件旁边生成一个新的文件，并打开差异对比窗口对比前后差别"
+          ]
+        },
+        "ankosure-assistant.typeset.sabun.format": {
+          "order": 1,
+          "markdownDescription": "角色差分的格式。用于识别对话中的角色差分",
+          "type": "string",
+          "default": "点号",
+          "enum": [
+            "点号",
+            "圆括号"
+          ],
+          "enumDescriptions": [
+            "角色名.差分名：发言内容",
+            "角色名（差分名）：发言内容"
+          ]
+        },
+        "ankosure-assistant.typeset.sabun.action": {
+          "order": 1,
+          "markdownDescription": "角色差分的处理方式",
+          "type": "string",
+          "default": "删除",
+          "enum": [
+            "删除",
+            "保留"
+          ],
+          "enumDescriptions": [
+            "排版之后直接删除",
+            "排版之后保留"
+          ]
         }
       }
     }
