@@ -42,7 +42,7 @@ export function typeset() {
 
         //如果新旧文本一致，就认为没有操作成功，不创建新文件
         if (newText === text) {
-            vscode.window.showInformationMessage("操作取消或者操作前后无差别，未新建文件");
+            vscode.window.showInformationMessage("操作取消或者操作前后无差别，可能是因为用了英文冒号，改成中文的试试。（不适配英文冒号是为了避免通常而言使用英文冒号的骰子被当做对话而误伤）");
             return;
         }
 
@@ -71,8 +71,7 @@ function dialogConverter(input: string) {
     }
 
     if (!("角色" in jsonObj) || (typeof jsonObj["角色"] !== "object")) {
-        vscode.window.showErrorMessage("当前数据文件中，不存在名为“角色”的顶层文件夹，需要新建这个文件夹，并在其中存放角色图片，才能使用该功能");
-        return input;
+        vscode.window.showWarningMessage("当前数据文件中，不存在名为“角色”的顶层文件夹，需要新建这个文件夹，并在其中存放角色图片，才会给角色配头像");
     }
 
     let characters = jsonObj["角色"];
@@ -86,12 +85,12 @@ function dialogConverter(input: string) {
         } else if (typeof characters[key] === "object") {
             //是文件夹
             if (Object.keys(characters[key]).length === 0) {
-                vscode.window.showErrorMessage(`角色「${key}」不存在可以使用的图片`);
-                return input;
+                pcMap.set(key, "");
+            } else {
+                let subtypes = characters[key];
+                pcMap.set(key, subtypes[Object.keys(subtypes)[0]]);
             }
-            let subtypes = characters[key];
 
-            pcMap.set(key, subtypes[Object.keys(subtypes)[0]]);
         } else {
             vscode.window.showErrorMessage("数据文件内容解析错误，可能被手动修改过");
             return input;
@@ -101,7 +100,7 @@ function dialogConverter(input: string) {
 
     //逐行遍历
     let output = "";
-    let regex = /^(【.*?】)?(.*?)：(.*?)$/m;
+    let regex = /^(【.*?】|\[.*?\])?(.*?)：(.*?)$/m;
     let lineNum = 0;
     for (let line of input.split("\n")) {
         if (lineNum !== 0) {
@@ -112,8 +111,11 @@ function dialogConverter(input: string) {
             let title = r[1];
             let name = r[2];
             let content = r[3];
-            output += `[quote]${pcMap.has(name) ? `[l][img]${pcMap.get(name)}[/img][/l]` : ""}
-[b]${title + name}[/b]
+            if (!pcMap.get(name)) {
+                vscode.window.showWarningMessage(`角色「${name}」不存在可以使用的图片，不会添加头像`);
+            }
+            output += `[quote]${pcMap.get(name) ? `[l][img]${pcMap.get(name)}[/img][/l]` : ""}
+[b]${title ?? ""}${name}[/b]
 ${content}
 ======
 [/quote]`;
