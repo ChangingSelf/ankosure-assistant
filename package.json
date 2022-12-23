@@ -2,7 +2,7 @@
   "name": "ankosure-assistant",
   "displayName": "安科助手",
   "description": "辅助安科(あんこスレ)的创作",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -245,8 +245,8 @@
             "圆括号"
           ],
           "enumDescriptions": [
-            "角色名.差分名：发言内容",
-            "角色名（差分名）：发言内容"
+            "角色名.差分名：中英文句号都可以",
+            "角色名（差分名）：中英文圆括号都可以"
           ]
         },
         "ankosure-assistant.typeset.sabun.action": {

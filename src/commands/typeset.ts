@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { loadSettings, SaveMethod } from '../utils';
+import { loadSettings, SabunAction, SabunFormat, SaveMethod } from '../utils';
 
 
 /**
@@ -82,6 +82,10 @@ function dialogConverter(input: string) {
     //读取角色数据
     let settings = loadSettings();
     let imagesDataPath = settings.imagesDataPath;
+    let sabunFormat = settings.sabunFormat;
+    let sabunAction = settings.sabunAction;
+
+
     if (!fs.existsSync(imagesDataPath)) {
         vscode.window.showErrorMessage("请配置正确的图片资源数据文件");
         return input;
@@ -99,21 +103,21 @@ function dialogConverter(input: string) {
 
     let characters = jsonObj["角色"];
 
-    let pcMap = new Map<string, string>();//角色名->url
+    let pcMap = new Map<string, { [sabun: string]: string }>();//角色名->{差分名:url}
 
-    for (let key in characters) {
-        if (typeof characters[key] === "string") {
+    for (let pcName in characters) {
+        if (typeof characters[pcName] === "string") {
             //是图片结点
-            pcMap.set(key, characters[key]);
-        } else if (typeof characters[key] === "object") {
+            pcMap.set(pcName, { "default": characters[pcName] });
+        } else if (typeof characters[pcName] === "object") {
             //是文件夹
-            if (Object.keys(characters[key]).length === 0) {
-                pcMap.set(key, "");
+            if (Object.keys(characters[pcName]).length === 0) {
+                //不存在可以使用的图片
+                pcMap.set(pcName, {});
             } else {
-                let subtypes = characters[key];
-                pcMap.set(key, subtypes[Object.keys(subtypes)[0]]);
+                let character = characters[pcName];//角色对象 = {差分名:差分url}
+                pcMap.set(pcName, character);
             }
-
         } else {
             vscode.window.showErrorMessage("数据文件内容解析错误，可能被手动修改过");
             return input;
@@ -123,7 +127,25 @@ function dialogConverter(input: string) {
 
     //逐行遍历
     let output = "";
-    let regex = /^(【.*?】|\[.*?\])?(.*?)：(.*?)$/m;
+    // let regex = /^(【.+?】|\[.+?\])?(.+?)(\.(.+)|（(.+)）|\((.+)\))?：(.+?)$/m;
+    let regexMix = /^(?<title>【.+?】|\[.+?\])?(?<name>.+?)(?<sabunStr>[\.。](?<sabunDot>.+)|（(?<sabunCnP>.+)）|\((?<sabunEnP>.+)\))?：(?<content>.+?)$/m;
+
+    let regexDot = /^(?<title>【.+?】|\[.+?\])?(?<name>.+?)(?<sabunStr>[\.。](?<sabunDot>.+))?：(?<content>.+?)$/m;
+    let regexP = /^(?<title>【.+?】|\[.+?\])?(?<name>.+?)(?<sabunStr>（(?<sabunCnP>.+)）|\((?<sabunEnP>.+)\))?：(?<content>.+?)$/m;
+
+    //选择正则表达式
+    let regex = regexMix;
+    switch (sabunFormat) {
+        case SabunFormat.dot:
+            regex = regexDot;
+            break;
+        case SabunFormat.parentheses:
+            regex = regexP;
+            break;
+        default:
+            break;
+    }
+
     let lineNum = 0;
     for (let line of input.split("\n")) {
         if (lineNum !== 0) {
@@ -131,14 +153,26 @@ function dialogConverter(input: string) {
         }
         let r = regex.exec(line);
         if (r) {
-            let title = r[1];
-            let name = r[2];
-            let content = r[3];
+            const { title, name, sabunStr, sabunDot, sabunCnP, sabunEnP, content } = r.groups as { title: string, name: string, sabunStr: string, sabunDot: string, sabunCnP: string, sabunEnP: string, content: string };
+            let sabunFilter = [sabunDot, sabunCnP, sabunEnP];
+
+            let sabun = sabunFilter.find(x => !!x) ?? "default";
+
+
             if (!pcMap.get(name)) {
                 vscode.window.showWarningMessage(`角色「${name}」不存在可以使用的图片，不会添加头像`);
             }
-            output += `[quote]${pcMap.get(name) ? `[l][img]${pcMap.get(name)}[/img][/l]` : ""}
-[b]${title ?? ""}${name}[/b]
+
+            let sabunMap = pcMap.get(name) ?? {};
+            let url = "";
+            if (sabun in sabunMap) {
+                //差分存在
+                url = sabunMap[sabun];
+            }
+
+
+            output += `[quote]${url ? `[l][img]${url}[/img][/l]` : ""}
+[b]${title ?? ""}${name}${sabunAction === SabunAction.retain ? (sabunStr ?? "") : ""}[/b]
 ${content}
 ======
 [/quote]`;

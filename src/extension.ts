@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     //侧边栏骰子历史
     let diceLogProvider = new DiceLogProvider();
-    let dicelogTreeView = vscode.window.createTreeView('ankosure-dice-log', {
+    let diceLogTreeView = vscode.window.createTreeView('ankosure-dice-log', {
         treeDataProvider: diceLogProvider,
         showCollapseAll: true
     });
@@ -54,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
     //刷新视图
     context.subscriptions.push(vscode.commands.registerCommand('ankosure-assistant.refreshTreeView', () => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh(dicelogTreeView);
+        diceLogProvider.refresh(diceLogTreeView);
     }));
 
     //新建图片数据文件
@@ -159,19 +159,19 @@ export function activate(context: vscode.ExtensionContext) {
     //事件
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh(dicelogTreeView);
+        diceLogProvider.refresh(diceLogTreeView);
     }));
     context.subscriptions.push(vscode.window.onDidChangeTextEditorSelection((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh(dicelogTreeView);
+        diceLogProvider.refresh(diceLogTreeView);
     }));
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((event) => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh(dicelogTreeView);
+        diceLogProvider.refresh(diceLogTreeView);
     }));
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
         imageLinksProvider.refresh(imageLinksTreeView);
-        diceLogProvider.refresh(dicelogTreeView);
+        diceLogProvider.refresh(diceLogTreeView);
     }));
 }
 
