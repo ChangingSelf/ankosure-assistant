@@ -124,7 +124,9 @@
 
 可以设置在排版后是否保留差分名。
 
+#### 2、markdown转NGA代码
 
+除了常见的粗体斜体下划线链接图片等转换，还支持\<details\>标签转化成[collapse]标签，在里面用\<summary\>标签来指定[collapse]标签的概述
 
 
 ### Coming Soon

@@ -6,6 +6,10 @@
 并且该项目遵循 [语义版本控制（Semantic Versioning）](https://semver.org/spec/v2.0.0.html)。
 
 
+## [0.3.0] - 2022-12-27
+
+- 排版选项新增“markdown转NGA论坛代码”
+
 ## [0.2.8] - 2022-12-27
 
 - 修复无法识别NGA论坛附件相对地址的bug

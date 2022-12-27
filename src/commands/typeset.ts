@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import MarkdownIt from 'markdown-it';
 import { loadSettings, SabunAction, SabunFormat, SaveMethod } from '../utils';
 
 
@@ -27,6 +28,12 @@ export function typeset() {
             description: '【可有可无的角色头衔】角色名：中文冒号后是单行角色发言内容',
             detail: '自动识别图片管理器中(放在最顶层的)“角色”文件夹下的图片(作为角色)和文件夹(作为角色)下第一个图片(作为默认角色差分)',
             converter: dialogConverter
+        }
+        , {
+            label: "将markdown转换为NGA论坛代码",
+            description: '',
+            detail: '',
+            converter: markdownConverter
         }
     ];
 
@@ -77,7 +84,9 @@ export function typeset() {
     });
 }
 
-
+/**
+ * 对话形式的文本的排版
+ */
 function dialogConverter(input: string) {
     //读取角色数据
     let settings = loadSettings();
@@ -183,4 +192,46 @@ ${content}
     }
 
     return output;
+}
+
+/**
+ * markdown转换
+ * 原理是先渲染为html，再将html标签正则替换为bbcode标签
+ */
+function markdownConverter(input: string) {
+    let markdownIt = new MarkdownIt({ "html": true });
+    let html = markdownIt.render(input);
+    return html
+        .replaceAll(/<blockquote>(.*?)<\/blockquote>/gs, "[quote]$1[/quote]")
+        .replaceAll(/<img src="(.*?)".*?>/g, "[img]$1[/img]")
+        .replaceAll(/<a href="(.*?)">(.*?)<\/a>/g, "[url=$1]$2[/url]")
+        .replaceAll(/<strong>(.*?)<\/strong>/gs, "[b]$1[/b]")
+        .replaceAll(/<u>(.*?)<\/u>/gs, "[u]$1[/u]")
+        .replaceAll(/<s>(.*?)<\/s>/gs, "[del]$1[/del]")
+        .replaceAll(/<h(\d)>(.*?)<\/h\1>/g, "[h]$2[/h]")
+        .replaceAll(/<em>(.*?)<\/em>/gs, (m, content: string) => {
+            // 到了第46个中文字符的时候NGA论坛就会报错：一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三/* bbscode i too long */
+            // 所以需要每40个字符就分一个[i]标签
+            let limit = 40;
+            if (content.length < limit) {
+                return `[i]${content}[/i]`;
+            }
+            let result = "";
+            for (let i = 0; i < content.length; i += limit) {
+                result += `[i]${content.slice(i, i + limit)}[/i]`;
+            }
+            return result;
+        })
+        .replaceAll(/<details>(.*?)<\/details>/gs, (m, content) => {
+            let summary = /<summary>(.*?)<\/summary>/.exec(content);
+            let summaryStr = "";
+            if (summary) {
+                content = content.replaceAll(/<summary>(.*?)<\/summary>/gs, "");
+                summaryStr = `=${summary[1]}`;
+            }
+            content = markdownConverter(content);
+
+            return `[collapse${summaryStr}]${content}[/collapse]`;
+        })
+        .replaceAll(/<p>(.*?)<\/p>/gs, "$1");
 }
