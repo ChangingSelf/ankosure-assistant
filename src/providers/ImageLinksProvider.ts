@@ -276,6 +276,9 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>, v
         }
 
         sources.forEach(source => {
+            if (source.id === target?.id) {
+                return;//如果拖入自身，则跳过
+            }
             //加入到该文件夹
             if (!(source.label in targetObj)) {
                 //没有重名
