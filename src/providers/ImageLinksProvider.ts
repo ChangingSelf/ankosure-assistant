@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as path from 'path';
 import { loadSettings } from '../utils';
 
 /** 图片数据的格式
@@ -116,6 +117,20 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>, v
         if (isImage) {
             url = await vscode.window.showInputBox({ placeHolder: "请输入图片的网络链接", prompt: "图片链接", ignoreFocusOut: true });
             if (!url) { return; }
+
+            url = url.trim();
+
+            //去除外层img标签
+            let r = /^\[img\](.*)\[\/img\]$/m.exec(url);
+            if (r) {
+                url = r[1];
+            }
+
+            //将相对链接转化为绝对链接
+            //https://img.nga.178.com/attachments/mon_202212/22/lsQ2r-baihZvT3cS1f6-u0.png
+            if (url.startsWith("./")) {
+                url = path.join("https://img.nga.178.com/attachments", url);
+            }
         }
 
         let jsonObj = this.loadData();
