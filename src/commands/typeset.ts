@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import MarkdownIt from 'markdown-it';
+import * as MarkdownIt from 'markdown-it';
 import { loadSettings, SabunAction, SabunFormat, SaveMethod } from '../utils';
 
 
