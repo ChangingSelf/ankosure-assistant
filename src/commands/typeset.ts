@@ -24,16 +24,22 @@ export function typeset() {
 
     let optList = [
         {
-            label: "展示角色头像的对话排版",
+            label: "$(comment-discussion) 展示角色头像的对话排版",
             description: '【可有可无的角色头衔】角色名：中文冒号后是单行角色发言内容',
             detail: '自动识别图片管理器中(放在最顶层的)“角色”文件夹下的图片(作为角色)和文件夹(作为角色)下第一个图片(作为默认角色差分)',
             converter: dialogConverter
         }
         , {
-            label: "将markdown转换为NGA论坛代码",
+            label: "$(markdown) 将markdown转换为NGA论坛代码",
             description: '',
-            detail: '',
+            detail: '除了常见的粗体斜体下划线链接图片等转换，还支持<details>标签转化成[collapse]标签，在里面用<summary>标签来指定[collapse]标签的概述',
             converter: markdownConverter
+        }
+        , {
+            label: "$(bold) 加粗所有骰点表达式",
+            description: `/(?<prefix>ROLL\\s*:\\s*)?(?<diceExpr>\\d*[Dd]\\d+(?<buff>\\s*[+-]\\s*\\d+)?\\s*(?<process>=.+?)?=(?<result>\\s*\\d+(\\/(?<check>\\d+))?))/gi`,
+            detail: '以骰子(nDm形式)开头，可带一个调整值和计算过程，coc检定的正斜杠表检定值的形式也兼容',
+            converter: (input: string) => input.replaceAll(/(?<prefix>ROLL\s*:\s*)?(?<diceExpr>\d*[Dd]\d+(?<buff>\s*[+-]\s*\d+)?\s*(?<process>=.+?)?=(?<result>\s*\d+(\/(?<check>\d+))?))/gi, "[b]$&[/b]")
         }
     ];
 
