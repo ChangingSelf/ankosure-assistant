@@ -129,7 +129,8 @@ export class ImageLinksProvider implements vscode.TreeDataProvider<ImageItem>, v
             //将相对链接转化为绝对链接
             //https://img.nga.178.com/attachments/mon_202212/22/lsQ2r-baihZvT3cS1f6-u0.png
             if (url.startsWith("./")) {
-                url = path.join("https://img.nga.178.com/attachments", url);
+                url = url.slice(1, url.length);
+                url = "https://img.nga.178.com/attachments" + url;
             }
         }
 
