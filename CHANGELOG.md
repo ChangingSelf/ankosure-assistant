@@ -5,6 +5,9 @@
 格式基于[维护更新日志（Keep a Changelog）](https://keepachangelog.com/en/1.0.0/)，
 并且该项目遵循 [语义版本控制（Semantic Versioning）](https://semver.org/spec/v2.0.0.html)。
 
+## [0.4.2] - 2024-02-19
+
+- 修复markdown转论坛代码的时候列表未转换的问题
 
 ## [0.4.1] - 2023-01-11
 

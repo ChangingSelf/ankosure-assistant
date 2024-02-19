@@ -214,6 +214,9 @@ function markdownConverter(input: string) {
         .replaceAll(/<strong>(.*?)<\/strong>/gs, "[b]$1[/b]")
         .replaceAll(/<u>(.*?)<\/u>/gs, "[u]$1[/u]")
         .replaceAll(/<s>(.*?)<\/s>/gs, "[del]$1[/del]")
+        .replaceAll(/<ul>(.*?)<\/ul>/gs, "[list]$1[/list]")
+        .replaceAll(/<ol>(.*?)<\/ol>/gs, "[list=1]$1[/list]")
+        .replaceAll(/<li>(.*?)<\/li>/gs, "[*]$1")
         .replaceAll(/<h(\d)>(.*?)<\/h\1>/g, "[h]$2[/h]")
         .replaceAll(/<em>(.*?)<\/em>/gs, (m, content: string) => {
             // 到了第46个中文字符的时候NGA论坛就会报错：一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三/* bbscode i too long */
