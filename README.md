@@ -65,6 +65,58 @@
 - 数字加减：1d80+20,1d100-30
 - 组合运算：3d6+4d9
 
+### NGA快捷键格式化
+
+为了便于在VSCode中快速输入NGA论坛的BBCode格式，本插件提供了以下快捷键功能：
+
+| 快捷键 | 功能 | BBCode格式 |
+|--------|------|------------|
+| `Ctrl+Alt+B` | 加粗文字 | `[b]文字[/b]` |
+| `Ctrl+Alt+I` | 斜体文字 | `[i]文字[/i]` |
+| `Ctrl+Alt+U` | 下划线文字 | `[u]文字[/u]` |
+| `Ctrl+Shift+S` | 删除线文字 | `[del]文字[/del]` |
+| `Ctrl+Shift+U` | 插入链接 | `[url]链接地址[/url]` 或 `[url=地址]链接文字[/url]` |
+| `Ctrl+Shift+I` | 插入图片 | `[img]图片链接地址[/img]` |
+| `Ctrl+Shift+C` | 设置文字颜色 | `[color=颜色]文字[/color]` |
+| `Ctrl+Shift+Z` | 设置字体大小 | `[size=大小]文字[/size]` |
+| `Ctrl+Shift+Q` | 引用文字 | `[quote]引用内容[/quote]` |
+| `Ctrl+Shift+D` | 骰子表达式 | `[dice]骰子表达式[/dice]` |
+| `Ctrl+Alt+Q` | 折叠/剧透 | `[collapse=标题]折叠内容[/collapse]` |
+| `Ctrl+Shift+A` | 文字对齐 | `[align=对齐方式]文字[/align]` |
+
+**使用方法：**
+1. 选中要格式化的文字（如果没有选中文字，会插入带占位符的标签）
+2. 按下对应的快捷键
+3. 对于颜色、字体大小、对齐、折叠等功能，会弹出选择菜单供您选择
+4. 如果没有选中文字，占位符会被自动选中，方便直接输入内容
+
+**颜色选项：**
+NGA论坛支持以下颜色选项：
+- 蓝色系：天蓝色(skyblue)、皇家蓝(royalblue)、蓝色(blue)、深蓝色(darkblue)
+- 红色系：橙色(orange)、橙红色(orangered)、深红色(crimson)、红色(red)、火砖红(firebrick)、暗红色(darkred)
+- 绿色系：绿色(green)、酸橙绿(limegreen)、海绿色(seagreen)、青色(teal)
+- 粉色系：深粉色(deeppink)、番茄色(tomato)、珊瑚色(coral)
+- 紫色系：紫色(purple)、靛蓝色(indigo)
+- 棕色系：实木色(burlywood)、沙褐色(sandybrown)、赭色(sienna)、巧克力色(chocolate)
+- 其他：银色(silver)
+
+**字体大小选项：**
+NGA论坛使用百分比来控制字体大小：
+- 正常大小：`[size=100%]文字[/size]`
+- 稍大：`[size=120%]文字[/size]`
+- 中等大：`[size=130%]文字[/size]`
+- 大：`[size=150%]文字[/size]`
+- 自定义：可以输入任意百分比，如`[size=80%]文字[/size]`、`[size=200%]文字[/size]`
+
+**对齐选项：**
+- 居中对齐：`[align=center]文字[/align]`
+- 右对齐：`[align=right]文字[/align]`
+- 左对齐：`[align=left]文字[/align]`
+
+**注意：** 
+- 这些快捷键只在编辑纯文本（.txt）或Markdown（.md）文件时生效
+- 加粗、斜体、下划线使用`Ctrl+Alt`组合键是为了避免与VSCode默认的Markdown快捷键冲突
+
 ### 一键排版
 
 在txt文件或者markdown文件中，可以在右键菜单中找到“安科助手：用论坛代码排版”的菜单项。

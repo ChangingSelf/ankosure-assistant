@@ -7,6 +7,7 @@ import { loadSettings } from './utils';
 import { DiceMaid } from './commands/DiceMaid';
 import { DiceLogItem, DiceLogProvider } from './providers/DiceLogProvider';
 import { typeset } from './commands/typeset';
+import { NgaFormatter } from './commands/NgaFormatter';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -154,7 +155,19 @@ export function activate(context: vscode.ExtensionContext) {
     //排版
     context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.typeset", typeset));
 
-
+    // NGA格式化命令
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.bold", () => NgaFormatter.bold()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.italic", () => NgaFormatter.italic()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.underline", () => NgaFormatter.underline()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.strikethrough", () => NgaFormatter.strikethrough()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.link", () => NgaFormatter.link()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.image", () => NgaFormatter.image()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.color", () => NgaFormatter.color()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.size", () => NgaFormatter.size()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.quote", () => NgaFormatter.quote()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.dice", () => NgaFormatter.dice()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.collapse", () => NgaFormatter.collapse()));
+    context.subscriptions.push(vscode.commands.registerCommand("ankosure-assistant.nga.align", () => NgaFormatter.align()));
 
     //事件
     context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event) => {

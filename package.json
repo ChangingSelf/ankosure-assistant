@@ -2,7 +2,7 @@
   "name": "ankosure-assistant",
   "displayName": "安科助手",
   "description": "辅助安科(あんこスレ)的创作",
-  "version": "0.4.2",
+  "version": "0.5.1",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -94,6 +94,54 @@
       {
         "command": "ankosure-assistant.typeset",
         "title": "安科助手：用论坛代码排版"
+      },
+      {
+        "command": "ankosure-assistant.nga.bold",
+        "title": "NGA加粗"
+      },
+      {
+        "command": "ankosure-assistant.nga.italic",
+        "title": "NGA斜体"
+      },
+      {
+        "command": "ankosure-assistant.nga.underline",
+        "title": "NGA下划线"
+      },
+      {
+        "command": "ankosure-assistant.nga.strikethrough",
+        "title": "NGA删除线"
+      },
+      {
+        "command": "ankosure-assistant.nga.link",
+        "title": "NGA链接"
+      },
+      {
+        "command": "ankosure-assistant.nga.image",
+        "title": "NGA图片"
+      },
+      {
+        "command": "ankosure-assistant.nga.color",
+        "title": "NGA颜色"
+      },
+      {
+        "command": "ankosure-assistant.nga.size",
+        "title": "NGA字体大小"
+      },
+      {
+        "command": "ankosure-assistant.nga.quote",
+        "title": "NGA引用"
+      },
+      {
+        "command": "ankosure-assistant.nga.dice",
+        "title": "NGA骰子"
+      },
+      {
+        "command": "ankosure-assistant.nga.collapse",
+        "title": "NGA折叠"
+      },
+      {
+        "command": "ankosure-assistant.nga.align",
+        "title": "NGA对齐"
       }
     ],
     "viewsContainers": {
@@ -205,6 +253,68 @@
         }
       ]
     },
+    "keybindings": [
+      {
+        "command": "ankosure-assistant.nga.bold",
+        "key": "ctrl+alt+b",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.italic",
+        "key": "ctrl+alt+i",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.underline",
+        "key": "ctrl+alt+u",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.strikethrough",
+        "key": "ctrl+shift+s",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.link",
+        "key": "ctrl+shift+u",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.image",
+        "key": "ctrl+shift+i",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.color",
+        "key": "ctrl+shift+c",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.size",
+        "key": "ctrl+shift+z",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.quote",
+        "key": "ctrl+shift+q",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.dice",
+        "key": "ctrl+shift+d",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.collapse",
+        "key": "ctrl+alt+q",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      },
+      {
+        "command": "ankosure-assistant.nga.align",
+        "key": "ctrl+shift+a",
+        "when": "editorTextFocus && (resourceLangId == markdown || resourceLangId == plaintext)"
+      }
+    ],
     "configuration": {
       "order": 0,
       "title": "安科助手",
